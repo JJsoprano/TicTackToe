@@ -11,6 +11,9 @@ body {
     flex-direction: column; /* Your preferred column layout */
     background-color: #e0e0e0; /* Light grey background from suggestions */
 }
+body.o-win.background{
+    background-color: #2ecc71;
+}
 
 /* Container for the entire game - From suggestions */
 .game-container {
@@ -123,8 +126,6 @@ h1 {
     height: 95%; /* Adjusted size to fit inside responsive square */
     width: 95%; /* Adjusted size to fit inside responsive square */
     position: relative;
-    /* FIX: Removed transform from parent. Individual rotations applied to pseudo-elements below. */
-    /* transform: rotate(45deg); */
 }
 
 .x:before, .x:after {
@@ -175,9 +176,85 @@ h1 {
     transform: translateY(0); /* Press effect */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduced shadow on active */
 }
+.x-win-burst{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, rgba(255, 223, 0, 0.8) 0%, rgba(255, 140, 0, 0.6) 50%, rgba(255, 0, 0, 0) 100%);
+    box-shadow: 0 0 50px 20px rgba(255, 140, 0, 0.7); /* Initial glow effect */
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999;
+
+}
+/* Animation for the burst */
+.x-win-burst.active {
+    animation: burst-animation 1.2s forwards ease-out; /* Apply animation when 'active' class is present */
+}
+
+@keyframes burst-animation {
+    0% {
+        transform: translate(-50%,-50%) scale(0); /* Start very small */
+        opacity: 0;
+        box-shadow: 0 0 0 0 rgba(255, 140, 0, 0.7); /* No initial glow */
+    }
+    10% {
+        opacity: 1; /* Quickly become fully opaque */
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.5); /* Expand to full size */
+        opacity: 0.8;
+        box-shadow: 0 0 80px 40px rgba(255, 140, 0, 0.8); /* Max glow */
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(2.5); /* Further expand and fade out */
+        opacity: 0;
+        box-shadow: 0 0 120px 50px rgba(255, 140, 0, 0); /* Fade out glow */
+    }
+}
+.llm-commentary-section{
+    margin-top: 25px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: insert 0 2px 5px rgba(0,0,0,0,0.05);
+    width: 90%;
+    max-width: 580px;
+    min-height: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.llm-commentary-text{
+    font-size: 1.1em;
+    color: #555;
+    font-style: italic;
+    margin: 0;
+}
+.llm-loading-indicator{
+    font-size: 0.9em;
+    color: #888;
+    margin: 5px 0 0;
+    animation: pulse 1.5s infinite alternate;
+}
+.hidden{
+    display: none;
+}
+@keyframes pulse{
+    0%{opacity:0.6;}
+    100%{opacity: 1;}
+}
 
 /* Responsive adjustments for smaller screens - Adapted for your layout */
 @media (max-width: 680px) { /* Adjusted breakpoint to fit the larger board */
+    body{
+        padding: 10px;
+    }
     .game-container {
         padding: 15px;
         border-radius: 10px;
@@ -223,7 +300,22 @@ h1 {
     .x:before, .x:after {
         background-color: rgb(219, 32, 64); /* Ensure color remains */
         height: 20px; /* Adjust thickness for smaller screens */
+     }
+
+    #newGameBtn {
+        padding: 10px 20px;
+        font-size: 1em;
+        margin-top: 20px;
     }
 
-    /* Rotation and centering remains the same for responsive x */
+    .x-win-burst {
+        width: 150px; /* Smaller burst on small screens */
+        height: 150px;
+    }
+
+    .llm-commentary-section {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+
 }

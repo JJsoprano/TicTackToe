@@ -6,15 +6,16 @@ let playerOCircleScoreSpan;
 let playerXCrossScoreSpan;
 let tiesScoreSpan;
 let newGameBtn;
+let xWinBurst; // Reference for the X-win burst element
+let llmCommentaryDisplay; // NEW: Reference for LLM commentary text
+let llmLoadingIndicator; // NEW: Reference for LLM loading indicator
 
 // --- Game State Variables ---
-// This array represents the Tic-Tac-Toe grid's content
 const boardState = ["", "", "", "", "", "", "", "", ""];
 let currentPlayer = "circle"; // Game starts with "circle" (O)
 let gameEnded = false; // Flag to indicate if the game has ended (win or draw)
 
 // Scores for each player and ties, initialized to 0.
-// These will now be loaded from localStorage.
 let playerOCircleWins = 0;
 let playerXCrossWins = 0;
 let ties = 0;
@@ -26,70 +27,114 @@ let ties = 0;
  * If no scores are found, initializes them to 0.
  */
 function loadScores() {
-    try {
-        const savedPlayerOCircleWins = localStorage.getItem('ticTacToePlayerOCircleWins');
-        const savedPlayerXCrossWins = localStorage.getItem('ticTacToePlayerXCrossWins');
-        const savedTies = localStorage.getItem('ticTacToeTies');
+  try {
+    const savedPlayerOCircleWins = localStorage.getItem(
+      "ticTacToePlayerOCircleWins"
+    );
+    const savedPlayerXCrossWins = localStorage.getItem(
+      "ticTacToePlayerXCrossWins"
+    );
+    const savedTies = localStorage.getItem("ticTacToeTies");
 
-        playerOCircleWins = savedPlayerOCircleWins ? parseInt(savedPlayerOCircleWins) : 0;
-        playerXCrossWins = savedPlayerXCrossWins ? parseInt(savedPlayerXCrossWins) : 0;
-        ties = savedTies ? parseInt(savedTies) : 0;
+    playerOCircleWins = savedPlayerOCircleWins
+      ? parseInt(savedPlayerOCircleWins)
+      : 0;
+    playerXCrossWins = savedPlayerXCrossWins
+      ? parseInt(savedPlayerXCrossWins)
+      : 0;
+    ties = savedTies ? parseInt(savedTies) : 0;
 
-        console.log("LOAD_SCORES: Scores loaded:", { playerOCircleWins, playerXCrossWins, ties });
-    } catch (e) {
-        console.error("LOAD_SCORES: Error loading scores from localStorage:", e);
-        // If there's an error, ensure scores are reset to 0 to prevent issues
-        playerOCircleWins = 0;
-        playerXCrossWins = 0;
-        ties = 0;
-    }
+    console.log("LOAD_SCORES: Scores loaded:", {
+      playerOCircleWins,
+      playerXCrossWins,
+      ties,
+    });
+  } catch (e) {
+    console.error("LOAD_SCORES: Error loading scores from localStorage:", e);
+    playerOCircleWins = 0;
+    playerXCrossWins = 0;
+    ties = 0;
+  }
 }
-
 
 /**
  * Saves current scores to localStorage.
  */
 function saveScores() {
-    try {
-        localStorage.setItem('ticTacToePlayerOCircleWins', playerOCircleWins.toString());
-        localStorage.setItem('ticTacToePlayerXCrossWins', playerXCrossWins.toString());
-        localStorage.setItem('ticTacToeTies', ties.toString());
-        console.log("SAVE_SCORES: Scores saved:", { playerOCircleWins, playerXCrossWins, ties });
-    } catch (e) {
-        console.error("SAVE_SCORES: Error saving scores to localStorage:", e);
-    }
+  try {
+    localStorage.setItem(
+      "ticTacToePlayerOCircleWins",
+      playerOCircleWins.toString()
+    );
+    localStorage.setItem(
+      "ticTacToePlayerXCrossWins",
+      playerXCrossWins.toString()
+    );
+    localStorage.setItem("ticTacToeTies", ties.toString());
+    console.log("SAVE_SCORES: Scores saved:", {
+      playerOCircleWins,
+      playerXCrossWins,
+      ties,
+    });
+  } catch (e) {
+    console.error("SAVE_SCORES: Error saving scores to localStorage:", e);
+  }
 }
 
 /**
  * Updates the score display spans in the HTML with the current win and tie counts.
  */
 function updateScoreDisplay() {
-    console.log("UPDATE_DISPLAY: Attempting to update scores with values:", { playerOCircleWins, playerXCrossWins, ties });
-    if (playerOCircleScoreSpan) {
-        playerOCircleScoreSpan.textContent = playerOCircleWins;
-        console.log("UPDATE_DISPLAY: Player Circle Score Span updated to:", playerOCircleScoreSpan.textContent);
-    } else {
-        console.warn("UPDATE_DISPLAY: playerOCircleScoreSpan is null or undefined. Cannot update score.");
-    }
-    if (playerXCrossScoreSpan) {
-        playerXCrossScoreSpan.textContent = playerXCrossWins;
-        console.log("UPDATE_DISPLAY: Player Cross Score Span updated to:", playerXCrossScoreSpan.textContent);
-    } else {
-        console.warn("UPDATE_DISPLAY: playerXCrossScoreSpan is null or undefined. Cannot update score.");
-    }
-    if (tiesScoreSpan) {
-        tiesScoreSpan.textContent = ties;
-        console.log("UPDATE_DISPLAY: Ties Score Span updated to:", tiesScoreSpan.textContent);
-    } else {
-        console.warn("UPDATE_DISPLAY: tiesScoreSpan is null or undefined. Cannot update score.");
-    }
+  console.log("UPDATE_DISPLAY: Attempting to update scores with values:", {
+    playerOCircleWins,
+    playerXCrossWins,
+    ties,
+  });
+  if (playerOCircleScoreSpan) {
+    playerOCircleScoreSpan.textContent = playerOCircleWins;
+    console.log(
+      "UPDATE_DISPLAY: Player Circle Score Span updated to:",
+      playerOCircleScoreSpan.textContent
+    );
+  } else {
+    console.warn(
+      "UPDATE_DISPLAY: playerOCircleScoreSpan is null or undefined. Cannot update score."
+    );
+  }
+  if (playerXCrossScoreSpan) {
+    playerXCrossScoreSpan.textContent = playerXCrossWins;
+    console.log(
+      "UPDATE_DISPLAY: Player Cross Score Span updated to:",
+      playerXCrossScoreSpan.textContent
+    );
+  } else {
+    console.warn(
+      "UPDATE_DISPLAY: playerXCrossScoreSpan is null or undefined. Cannot update score."
+    );
+  }
+  if (tiesScoreSpan) {
+    tiesScoreSpan.textContent = ties;
+    console.log(
+      "UPDATE_DISPLAY: Ties Score Span updated to:",
+      tiesScoreSpan.textContent
+    );
+  } else {
+    console.warn(
+      "UPDATE_DISPLAY: tiesScoreSpan is null or undefined. Cannot update score."
+    );
+  }
 }
 
 // Winning combinations (indices of cells)
 const winningConditions = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-    [0, 4, 8], [2, 4, 6]             // Diagonals
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8], // Rows
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8], // Columns
+  [0, 4, 8],
+  [2, 4, 6], // Diagonals
 ];
 
 /**
@@ -97,32 +142,32 @@ const winningConditions = [
  * Each square is given a 'square' class and a 'data-id' for tracking.
  */
 function createBoard() {
-    // Hide the "New Game" button at the start of a new game round
-    if (newGameBtn) { // This check is still good practice
-        newGameBtn.style.display = "none";
-        console.log("CREATE_BOARD: New Game button hidden.");
-    } else {
-        console.warn("CREATE_BOARD: newGameBtn is null, cannot hide.");
-    }
+  // Hide the "New Game" button at the start of a new game round
+  if (newGameBtn) {
+    newGameBtn.style.display = "none";
+    console.log("CREATE_BOARD: New Game button hidden.");
+  } else {
+    console.warn("CREATE_BOARD: newGameBtn is null, cannot hide.");
+  }
 
-    // Clear any existing squares from the gameBoard div (important for restarting)
-    if (gameBoard) { // Ensure gameBoard is not null before clearing
-        gameBoard.innerHTML = '';
-        console.log("CREATE_BOARD: Game board cleared.");
-    } else {
-        console.error("CREATE_BOARD: gameBoard element not found!");
-        return; // Prevent further errors if gameBoard is missing
-    }
+  // Clear any existing squares from the gameBoard div (important for restarting)
+  if (gameBoard) {
+    gameBoard.innerHTML = "";
+    console.log("CREATE_BOARD: Game board cleared.");
+  } else {
+    console.error("CREATE_BOARD: gameBoard element not found!");
+    return;
+  }
 
-    // Loop 9 times to create each of the Tic-Tac-Toe squares
-    boardState.forEach((_cellValue, index) => { // _cellValue is ignored, 'index' is used
-        const cellElement = document.createElement('div');
-        cellElement.classList.add("square"); // Add the CSS class "square"
-        cellElement.dataset.id = index; // Store the unique index as a data attribute (e.g., data-id="0")
-        cellElement.addEventListener("click", handleCellClick); // Attach a click event listener
-        gameBoard.append(cellElement); // Add the newly created square to the gameBoard div
-    });
-    console.log("CREATE_BOARD: 9 squares created and added to the board.");
+  // Loop 9 times to create each of the Tic-Tac-Toe squares
+  boardState.forEach((_cellValue, index) => {
+    const cellElement = document.createElement("div");
+    cellElement.classList.add("square");
+    cellElement.dataset.id = index;
+    cellElement.addEventListener("click", handleCellClick);
+    gameBoard.append(cellElement);
+  });
+  console.log("CREATE_BOARD: 9 squares created and added to the board.");
 }
 
 /**
@@ -130,74 +175,164 @@ function createBoard() {
  * Updates game state, places player mark, and checks for win/draw.
  * @param {Event} event The click event object.
  */
-function handleCellClick(event) {
-    const clickedCell = event.target; // The actual 'square' div that was clicked
-    const clickedCellId = parseInt(clickedCell.dataset.id); // Get its unique ID from the data-id attribute
-    console.log(`HANDLE_CLICK: Cell ${clickedCellId} clicked by ${currentPlayer}.`);
+async function handleCellClick(event) {
+  const clickedCell = event.target;
+  const clickedCellId = parseInt(clickedCell.dataset.id);
+  console.log(
+    `HANDLE_CLICK: Cell ${clickedCellId} clicked by ${currentPlayer}.`
+  );
 
-    // 1. Validate the move:
-    // Check if the cell is already taken (not empty)
-    // OR if the game has already ended (a winner or draw)
-    if (boardState[clickedCellId] !== "" || gameEnded) {
-        console.log("HANDLE_CLICK: Invalid move - cell occupied or game ended.");
-        return; // If invalid move, do nothing
+  if (boardState[clickedCellId] !== "" || gameEnded) {
+    console.log("HANDLE_CLICK: Invalid move - cell occupied or game ended.");
+    return;
+  }
+
+  boardState[clickedCellId] = currentPlayer;
+  const playerMark = document.createElement("div");
+  playerMark.classList.add(currentPlayer);
+  clickedCell.append(playerMark);
+  console.log(
+    `HANDLE_CLICK: Placed ${currentPlayer} mark on cell ${clickedCellId}.`
+  );
+
+  if (checkForWin()) {
+    await handleWin();
+  } else if (checkForDraw()) {
+    await handleDraw();
+  } else {
+    switchPlayer();
+  }
+}
+
+/**
+ * Handles logic when a player wins.
+ */
+async function handleWin() {
+  console.log("HANDLE_CLICK: Win detected!");
+  gameEnded = true;
+
+  let outcomeMessage = "";
+  let winnerPlayer = "";
+
+  if (currentPlayer === "circle") {
+    playerOCircleWins++;
+    document.body.classList.add("o-win-background");
+    outcomeMessage = "Player Circle won";
+    winnerPlayer = "Circle";
+  } else {
+    playerXCrossWins++;
+    if (xWinBurst) {
+      xWinBurst.classList.add("active");
     }
+    outcomeMessage = "Player Cross won";
+    winnerPlayer = "Cross";
+  }
 
-    // 2. Update game state:
-    boardState[clickedCellId] = currentPlayer; // Mark the cell in our boardState array
-    console.log("HANDLE_CLICK: boardState updated:", boardState);
+  if (infoDisplay) {
+    infoDisplay.innerHTML = `${winnerPlayer} is the winner!`;
+  }
 
-    // 3. Place the visual mark (X or O) on the board:
-    const playerMark = document.createElement("div"); // Create a new div for the mark
-    playerMark.classList.add(currentPlayer); // Add 'circle' or 'x' class for styling
-    clickedCell.append(playerMark); // Append this mark div inside the clicked square
-    console.log(`HANDLE_CLICK: Placed ${currentPlayer} mark on cell ${clickedCellId}.`);
+  console.log("HANDLE_CLICK: Scores incremented.", {
+    playerOCircleWins,
+    playerXCrossWins,
+  });
+  updateScoreDisplay();
+  saveScores();
+  if (newGameBtn) {
+    newGameBtn.style.display = "inline";
+  }
 
-    // 4. Check for win or draw:
-    if (checkForWin()) {
-        console.log("HANDLE_CLICK: Win detected!");
-        if (infoDisplay) { // Ensure infoDisplay is not null
-            infoDisplay.innerHTML = `${currentPlayer.toUpperCase()} is the winner!`; // Display winner message
-        }
-        gameEnded = true; // Set game state to ended
+  await generateGameCommentary(outcomeMessage);
+}
 
-        // Increment winner's score
-        if (currentPlayer === "circle") {
-            playerOCircleWins++;
-        } else {
-            playerXCrossWins++;
-        }
-        console.log("HANDLE_CLICK: Scores incremented.", { playerOCircleWins, playerXCrossWins });
-        updateScoreDisplay(); // Update score display
-        saveScores(); // Save scores to localStorage after a win
-        if (newGameBtn) { // Added a check
-            newGameBtn.style.display = "inline"; // Show the "New Game" button
-            console.log("HANDLE_CLICK: New Game button shown after win.");
-        }
-    } else if (checkForDraw()) {
-        console.log("HANDLE_CLICK: Draw detected!");
-        if (infoDisplay) { // Ensure infoDisplay is not null
-            infoDisplay.innerHTML = "It's a draw!"; // Display draw message
-        }
-        gameEnded = true; // Set game state to ended
+/**
+ * Handles logic when the game is a draw.
+ */
+async function handleDraw() {
+  console.log("HANDLE_CLICK: Draw detected!");
+  if (infoDisplay) {
+    infoDisplay.innerHTML = "It's a draw!";
+  }
+  gameEnded = true;
 
-        // Increment ties score
-        ties++;
-        console.log("HANDLE_CLICK: Ties incremented.", { ties });
-        updateScoreDisplay(); // Update score display
-        saveScores(); // Save scores to localStorage after a tie
-        if (newGameBtn) { // Added a check
-            newGameBtn.style.display = "inline"; // Show the "New Game" button
-            console.log("HANDLE_CLICK: New Game button shown after draw.");
-        }
+  ties++;
+  let outcomeMessage = "It was a tie";
+
+  console.log("HANDLE_CLICK: Ties incremented.", { ties });
+  updateScoreDisplay();
+  saveScores();
+  if (newGameBtn) {
+    newGameBtn.style.display = "inline";
+  }
+
+  await generateGameCommentary(outcomeMessage);
+}
+
+/**
+ * Switches the current player and updates the info display.
+ */
+function switchPlayer() {
+  currentPlayer = currentPlayer === "circle" ? "x" : "circle";
+  if (infoDisplay) {
+    infoDisplay.textContent = `It is now ${currentPlayer}'s turn`;
+  }
+  console.log("HANDLE_CLICK: Switched turn to:", currentPlayer);
+}
+
+/**
+ * NEW: Generates game commentary using the Gemini API (LLM).
+ * @param {string} outcomeDescription A description of the game's outcome (e.g., "Player X won", "It was a tie").
+ */
+async function generateGameCommentary(outcomeDescription) {
+  if (!llmCommentaryDisplay || !llmLoadingIndicator) {
+    console.warn(
+      "LLM Commentary display elements not found. Skipping commentary generation."
+    );
+    return;
+  }
+
+  llmCommentaryDisplay.textContent = ""; // Clear previous commentary
+  llmLoadingIndicator.classList.remove("hidden"); // Show loading indicator
+  console.log("GENERATE_COMMENTARY: Generating commentary...");
+
+  const prompt = `The Tic-Tac-Toe game just ended. Outcome: ${outcomeDescription}. Give a very short, cheerful, and slightly witty comment about this game's outcome. Keep it under 20 words.`;
+
+  let chatHistory = [];
+  chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+  const payload = { contents: chatHistory };
+  const apiKey = ""; // Canvas will automatically provide the API key at runtime
+
+  try {
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (
+      result.candidates?.length > 0 &&
+      result.candidates[0].content?.parts?.length > 0
+    ) {
+      const text = result.candidates[0].content.parts[0].text;
+      llmCommentaryDisplay.textContent = `✨ ${text}`; // Add sparkle emoji!
+      console.log("GENERATE_COMMENTARY: LLM commentary received:", text);
     } else {
-        // 5. If no win or draw, switch to the next player's turn:
-        currentPlayer = currentPlayer === "circle" ? "x" : "circle";
-        if (infoDisplay) { // Ensure infoDisplay is not null
-            infoDisplay.textContent = `It is now ${currentPlayer}'s turn`; // Update info display
-        }
-        console.log("HANDLE_CLICK: Switched turn to:", currentPlayer);
+      llmCommentaryDisplay.textContent = "✨ A thrilling game, indeed!"; // Fallback
+      console.warn(
+        "GENERATE_COMMENTARY: LLM response structure unexpected or empty."
+      );
     }
+  } catch (error) {
+    llmCommentaryDisplay.textContent =
+      "✨ Well played! (Commentary AI is resting)"; // Error fallback
+    console.error("GENERATE_COMMENTARY: Error calling Gemini API:", error);
+  } finally {
+    llmLoadingIndicator.classList.add("hidden"); // Hide loading indicator
+  }
 }
 
 /**
@@ -205,15 +340,14 @@ function handleCellClick(event) {
  * @returns {boolean} True if the current player has won, false otherwise.
  */
 function checkForWin() {
-    // Iterate through all possible winning combinations
-    return winningConditions.some(combination => {
-        const [a, b, c] = combination; // Destructure the three cell indices for the current combination
-
-        // Check if all three cells in this combination are occupied by the currentPlayer's mark
-        return boardState[a] === currentPlayer &&
-               boardState[b] === currentPlayer &&
-               boardState[c] === currentPlayer;
-    });
+  return winningConditions.some((combination) => {
+    const [a, b, c] = combination;
+    return (
+      boardState[a] === currentPlayer &&
+      boardState[b] === currentPlayer &&
+      boardState[c] === currentPlayer
+    );
+  });
 }
 
 /**
@@ -222,9 +356,7 @@ function checkForWin() {
  * @returns {boolean} True if the game is a draw, false otherwise.
  */
 function checkForDraw() {
-    // If the boardState array does not contain any empty strings, it means all cells are filled.
-    // Combined with no win, this implies a draw.
-    return !boardState.includes("");
+  return !boardState.includes("");
 }
 
 /**
@@ -232,63 +364,89 @@ function checkForDraw() {
  * Clears the board, resets player turn, hides "New Game" button, and updates info display.
  */
 function restartGame() {
-    console.log("RESTART_GAME: Starting game restart process.");
-    boardState.fill(""); // Clear all marks from the boardState array (set all to empty strings)
-    gameEnded = false; // Reset game state (game is now active)
-    currentPlayer = "circle"; // Reset current player to Circle
-    if (infoDisplay) { // Ensure infoDisplay is not null
-        infoDisplay.innerHTML = "Circle goes first"; // Update info display
-        console.log("RESTART_GAME: Info display reset.");
-    }
-    if (newGameBtn) { // Added a check
-        newGameBtn.style.display = "none"; // Hide "New Game" button
-        console.log("RESTART_GAME: New Game button hidden.");
-    }
+  console.log("RESTART_GAME: Starting game restart process.");
+  boardState.fill("");
+  gameEnded = false;
+  currentPlayer = "circle";
+  if (infoDisplay) {
+    infoDisplay.innerHTML = "Circle goes first";
+    console.log("RESTART_GAME: Info display reset.");
+  }
+  if (newGameBtn) {
+    newGameBtn.style.display = "none";
+    console.log("RESTART_GAME: New Game button hidden.");
+  }
 
-    // Clear all visual marks (X's and O's) from the squares on the board
-    document.querySelectorAll('.square').forEach(cell => {
-        cell.innerHTML = ''; // Remove any child elements (the 'x' or 'circle' divs) from each square
-    });
-    console.log("RESTART_GAME: Visual board cleared.");
+  // Remove animation classes when restarting the game
+  document.body.classList.remove("o-win-background");
+  if (xWinBurst) {
+    xWinBurst.classList.remove("active");
+    const _ = xWinBurst.offsetWidth; // Trigger reflow to reset animation
+    console.log("RESTART_GAME: Animation classes removed.");
+  }
 
-    // Explicitly update the score display after a game reset.
-    // This ensures the current, accumulated scores are always shown,
-    // even if the last game didn't result in a score change.
-    updateScoreDisplay();
-    console.log("RESTART_GAME: updateScoreDisplay called at end of restartGame.");
+  // NEW: Clear LLM commentary when restarting
+  if (llmCommentaryDisplay) {
+    llmCommentaryDisplay.textContent = "";
+  }
+  if (llmLoadingIndicator) {
+    llmLoadingIndicator.classList.add("hidden");
+  }
+  console.log("RESTART_GAME: LLM commentary cleared.");
+
+  document.querySelectorAll(".square").forEach((cell) => {
+    cell.innerHTML = "";
+  });
+  console.log("RESTART_GAME: Visual board cleared.");
+
+  updateScoreDisplay();
+  console.log("RESTART_GAME: updateScoreDisplay called at end of restartGame.");
 }
 
 // --- Ensure DOM is fully loaded before running game setup ---
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM_LOADED: DOMContentLoaded event fired.");
-    // Assign DOM element references here, ensuring they exist
-    gameBoard = document.querySelector("#gameboard");
-    infoDisplay = document.getElementById("info");
-    playerOCircleScoreSpan = document.getElementById('playerOCircleScore');
-    playerXCrossScoreSpan = document.getElementById('playerXCrossScore');
-    tiesScoreSpan = document.getElementById('tiesScore');
-    newGameBtn = document.getElementById("newGameBtn");
-    console.log("DOM_LOADED: DOM elements assigned:", { gameBoard, infoDisplay, playerOCircleScoreSpan, playerXCrossScoreSpan, tiesScoreSpan, newGameBtn });
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM_LOADED: DOMContentLoaded event fired.");
+  // Assign DOM element references here, ensuring they exist
+  gameBoard = document.querySelector("#gameboard");
+  infoDisplay = document.getElementById("info");
+  playerOCircleScoreSpan = document.getElementById("playerOCircleScore");
+  playerXCrossScoreSpan = document.getElementById("playerXCrossScore");
+  tiesScoreSpan = document.getElementById("tiesScore");
+  newGameBtn = document.getElementById("newGameBtn");
+  xWinBurst = document.getElementById("xWinBurst");
+  llmCommentaryDisplay = document.getElementById("llmCommentaryDisplay"); // NEW: Assign LLM commentary display
+  llmLoadingIndicator = document.getElementById("llmLoadingIndicator"); // NEW: Assign LLM loading indicator
+  console.log("DOM_LOADED: DOM elements assigned:", {
+    gameBoard,
+    infoDisplay,
+    playerOCircleScoreSpan,
+    playerXCrossScoreSpan,
+    tiesScoreSpan,
+    newGameBtn,
+    xWinBurst,
+    llmCommentaryDisplay,
+    llmLoadingIndicator,
+  });
 
-    // Load scores from localStorage when the page first loads
-    loadScores();
+  // Load scores from localStorage when the page first loads
+  loadScores();
 
-    // Initial update to display scores after loading them
-    updateScoreDisplay();
+  // Initial update to display scores after loading them
+  updateScoreDisplay();
 
-    // Set initial info display text
-    if (infoDisplay) { // Check before setting innerHTML
-        infoDisplay.innerHTML = "Circle goes first";
-    }
+  // Set initial info display text
+  if (infoDisplay) {
+    infoDisplay.innerHTML = "Circle goes first";
+  }
 
-    // Call createBoard to set up the game board when the script loads
-    createBoard();
+  // Call createBoard to set up the game board when the script loads
+  createBoard();
 
-    // Add event listener to the "New Game" button to restart the game
-    if (newGameBtn) { // Added a check for the button before adding listener
-        newGameBtn.addEventListener("click", restartGame);
-        console.log("DOM_LOADED: New Game button event listener added.");
-    } else {
-        console.warn("DOM_LOADED: newGameBtn is null, event listener not added.");
-    }
+  // Add event listener to the "New Game" button to restart the game
+  if (newGameBtn) {
+    newGameBtn.addEventListener("click", restartGame);
+    console.log("DOM_LOADED: New Game button event listener added.");
+  } else {
+    console.warn("DOM_LOADED: newGameBtn is null, event listener not added.");
+  }
 });

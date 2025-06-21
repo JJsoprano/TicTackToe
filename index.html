@@ -19,7 +19,13 @@
       <div id="gameboard"></div>
 
       <button id="newGameBtn">Restart Game</button>
+
+      <!-- This section is CRITICAL for the LLM commentary to display -->
+    <div class="llm-commentary-section">
+        <p id="llmCommentaryDisplay" class="llm-commentary-text"></p>
+        <p id="llmLoadingIndicator" class="llm-loading-indicator hidden">Generating commentary...</p>
     </div>
+    <div id="xWinBurst" class="x-win-burst"></div>
 
     <script src="tictactoe.js"></script>
   </body>
