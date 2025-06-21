@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <div class="game-container">
+      <h1>Tic-Tac-Toe</h1>
+      <div class="scores">
+        <p>Player Circle Wins: <span id="playerOCircleScore">0</span></p>
+        <p>Player Cross Wins: <span id="playerXCrossScore">0</span></p>
+        <p>Ties: <span id="tiesScore">0</span></p>
+      </div>
+      <div id="info" class="game-status">Circle goes first</div>
+
+      <div id="gameboard"></div>
+
+      <button id="newGameBtn">Restart Game</button>
+    </div>
+
+    <script src="tictactoe.js"></script>
+  </body>
+</html>

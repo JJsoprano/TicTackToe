@@ -1,0 +1,132 @@
+/* General reset and body styling */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensures body takes full viewport height */
+    background-color: #282c34; /* Dark background for the entire page */
+    color: #e0e0e0; /* Default text color */
+    font-family: 'Arial', sans-serif;
+    overflow: hidden; /* Prevents scrollbars if content slightly overflows */
+}
+
+/* Container for the entire game (board, title, status, button) */
+.game-container {
+    background-color: #eceef3; /* Slightly lighter background for the container */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+    text-align: center;
+    display: flex; /* Flexbox to stack child elements vertically */
+    flex-direction: column;
+    align-items: center; /* Center items horizontally within the container */
+    gap: 20px; /* Spacing between game elements */
+}
+
+/* Title styling */
+h1 {
+    color: #61dafb; /* Bright color for the title */
+    margin: 0; /* Reset default margin to use gap for spacing */
+}
+
+/* Game status message styling */
+#info.game-status { /* Using both ID and class for specificity matching HTML */
+    font-size: 1.5em; /* Larger font for status messages */
+    color: #a0a0a0; /* Muted color for info */
+    margin-bottom: 0; /* Adjusted for gap in game-container */
+}
+
+/* Game board container */
+#gameboard {
+    width: 600px;
+    height: 600px;
+    background-color: black; /* This is the background of the board itself */
+    display: flex;
+    flex-wrap: wrap; /* Allows squares to wrap into a 3x3 grid */
+    border: solid 1px black; /* Corrected syntax (no space in 1px) */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7); /* Shadow for the board */
+    border-radius: 5px;
+    overflow: hidden; /* Ensures any content inside stays within rounded corners */
+}
+
+/* Individual game square styling */
+.square {
+    width: 200px; /* 600px / 3 = 200px per square */
+    height: 200px;
+    background-color: white; /* Individual cell background - this is what makes them white! */
+    border: solid 1px black; /* Cell borders */
+    box-sizing: border-box; /* Corrected syntax: includes padding and border in width/height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer; /* Indicate it's clickable */
+    transition: background-color 0.2s ease-in-out; /* Smooth hover effect */
+}
+
+.square:hover {
+    background-color: #f0f0f0; /* Lighter white on hover */
+}
+
+/* Styles for the Circle (O) mark */
+.circle {
+    width: 150px; /* Size of the inner circle element */
+    height: 150px;
+    border-radius: 50%; /* Makes it a circle */
+    border: 25px solid rgb(10, 239, 67); /* Green border for the circle */
+    box-sizing: border-box; /* Ensures border is inside the 150px dimensions */
+}
+
+/* Styles for the Cross (X) mark container */
+.x {
+    width: 190px; /* Size of the inner 'X' container element */
+    height: 190px;
+    position: relative; /* Needed for positioning pseudo-elements */
+    transform: rotate(45deg); /* Rotates the base div to make drawing X easier */
+}
+
+/* Pseudo-elements for the two lines of the 'X' */
+.x::before,
+.x::after {
+    content: ""; /* Required for pseudo-elements */
+    position: absolute; /* Allows precise positioning */
+    background-color: rgb(68, 2, 2); /* Red color for 'X' lines */
+}
+
+/* Vertical line of the 'X' */
+.x::before {
+    left: 50%; /* Start at the horizontal center */
+    width: 30%; /* Thickness of the line */
+    margin-left: -15%; /* Move left by half its width to truly center */
+    height: 100%; /* Full height of the .x container */
+}
+
+/* Horizontal line of the 'X' */
+.x::after {
+    top: 50%; /* Start at the vertical center */
+    height: 30%; /* Thickness of the line */
+    margin-top: -15%; /* Move up by half its height to truly center */
+    width: 100%; /* Full width of the .x container */
+}
+
+/* Restart Button Styling */
+#restart {
+    background-color: #61dafb; /* Bright button color */
+    color: #282c34;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+}
+
+#restart:hover {
+    background-color: #4fa3d7;
+    transform: translateY(-2px);
+}
+
+#restart:active {
+    transform: translateY(0);
+}

@@ -1,0 +1,229 @@
+/* Basic reset and body styling - Merged from your code and suggestions */
+body {
+    font-family: 'Inter', Arial, sans-serif; /* Using Inter font for a modern look */
+    margin: 0;
+    padding: 20px; /* Add some padding for smaller screens */
+    box-sizing: border-box; /* Include padding in element's total width and height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full viewport height */
+    flex-direction: column; /* Your preferred column layout */
+    background-color: #e0e0e0; /* Light grey background from suggestions */
+}
+
+/* Container for the entire game - From suggestions */
+.game-container {
+    background-color: #ffffff; /* White background for the container */
+    padding: 30px;
+    border-radius: 15px; /* Rounded corners for the container */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Soft shadow */
+    text-align: center;
+    max-width: 650px; /* Adjusted max-width to accommodate 600px board + padding */
+    width: 100%; /* Full width on smaller screens */
+    box-sizing: border-box;
+    display: flex; /* Using flexbox for internal layout */
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center items horizontally */
+}
+
+/* Game title styling - From suggestions */
+h1 {
+    color: #2c3e50; /* Darker blue-grey color */
+    margin-bottom: 25px;
+    font-size: 2.2em;
+}
+
+/* Scores section styling - From suggestions */
+.scores {
+    display: flex;
+    justify-content: space-around; /* Distribute items evenly */
+    margin-bottom: 25px;
+    padding: 10px 0;
+    border-radius: 8px;
+    background-color: #f8f8f8; /* Slightly different background for scores */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
+    width: 90%; /* Make scores section responsive within container */
+    max-width: 580px; /* Fit well above the board */
+}
+
+.scores p {
+    margin: 0;
+    color: #34495e; /* Medium blue-grey */
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.scores span {
+    color: #e67e22; /* Orange color for scores */
+    margin-left: 5px;
+}
+
+/* Game status message - From suggestions */
+.game-status {
+    margin-bottom: 25px;
+    font-size: 1.3em;
+    color: #3498db; /* Blue for messages */
+    min-height: 1.5em; /* Prevent layout shift when message changes */
+    font-weight: bold;
+}
+
+/* Main game board grid - Primarily your code, with added suggestions */
+#gameboard {
+    width: 600px; /* Your specified width */
+    height: 600px; /* Your specified height */
+    background-color: black; /* Your specified background */
+    
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    grid-template-rows: repeat(3, 1fr);    /* 3 equal rows */
+    gap: 8px; /* Gap between grid items */
+
+    border: solid 1px black; /* This border is around the whole 600x600 board */
+    border-radius: 10px; /* Rounded corners from suggestions */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Deeper shadow from suggestions */
+    overflow: hidden; /* Ensures contents stay within rounded corners */
+    margin: 25px auto; /* Centering and spacing from suggestions */
+    max-width: 90%; /* Added for responsiveness */
+    aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
+}
+
+/* Individual cell styling - Primarily your code, with added suggestions */
+.square { /* Retaining your .square class name */
+    background-color: white; /* Your specified background */
+    border: solid 6px #cccccc; /* Changed from black to light grey */
+    box-sizing: border-box; /* Your specified box-sizing */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4em; /* Increased font size for X/O from suggestions */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth hover effect */
+    border-radius: 8px; /* Rounded corners for cells */
+}
+
+.square:hover { /* Added hover effect from suggestions */
+    background-color: #dcdde1; /* Slightly darker on hover */
+    transform: scale(1.02); /* Slight scale effect on hover */
+}
+
+/* Player specific styling for Circle - Your original code with color matching */
+.circle {
+    height: 95%; /* Adjusted size to fit inside responsive square */
+    width: 95%; /* Adjusted size to fit inside responsive square */
+    border-radius: 50%;
+    border: 25px solid rgb(36, 211, 80); /* Your specific color */
+    box-sizing: border-box;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
+}
+
+/* Player specific styling for Cross - Your original code with color matching */
+.x { /* Retaining your .x class name */
+    height: 95%; /* Adjusted size to fit inside responsive square */
+    width: 95%; /* Adjusted size to fit inside responsive square */
+    position: relative;
+    /* FIX: Removed transform from parent. Individual rotations applied to pseudo-elements below. */
+    /* transform: rotate(45deg); */
+}
+
+.x:before, .x:after {
+    content: "";
+    position: absolute;
+    background-color: rgb(219, 32, 64); /* Your specific color */
+    /* Common properties for both bars */
+    height: 25px; /* Thickness of the X bars */
+    width: 100%; /* Make bars span the full width of the parent .x */
+    top: 50%; /* Center vertically */
+    left: 0; /* Align to the left */
+    transform: translateY(-50%); /* Adjust for height to truly center */
+}
+
+.x:before {
+    /* FIX: Rotate this bar for one diagonal of the X */
+    transform: translateY(-50%) rotate(45deg); 
+}
+
+.x:after {
+    /* FIX: Rotate this bar for the other diagonal of the X */
+    transform: translateY(-50%) rotate(-45deg);
+}
+
+/* Styling for the New Game button - From suggestions */
+#newGameBtn {
+    padding: 12px 25px;
+    font-size: 1.1em;
+    background-color: #3498db; /* Blue button */
+    color: white;
+    border: none;
+    border-radius: 8px; /* Rounded button corners */
+    cursor: pointer;
+    margin-top: 30px;
+    transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Button shadow */
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+#newGameBtn:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+}
+
+#newGameBtn:active {
+    transform: translateY(0); /* Press effect */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduced shadow on active */
+}
+
+/* Responsive adjustments for smaller screens - Adapted for your layout */
+@media (max-width: 680px) { /* Adjusted breakpoint to fit the larger board */
+    .game-container {
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+
+    .scores p {
+        font-size: 1em;
+    }
+
+    .game-status {
+        font-size: 1.1em;
+        margin-bottom: 20px;
+    }
+
+    #gameboard {
+        width: 100%; /* Make board full width on smaller screens */
+        height: auto; /* Allow height to adjust */
+        margin: 20px auto;
+        border-radius: 8px; /* Slightly smaller border-radius */
+    }
+
+    .square {
+        font-size: 15vw; /* Adjust font size relative to viewport width */
+        border: solid 4px #cccccc; /* Slightly thinner light grey border */
+    }
+
+    .circle {
+        height: 95%; /* Adjust circle size to fit responsive square */
+        width: 95%;
+        border-width: 15px; /* Adjust border thickness */
+    }
+
+    .x {
+        height: 95%; /* Adjust x size to fit responsive square */
+        width: 95%;
+    }
+
+    .x:before, .x:after {
+        background-color: rgb(219, 32, 64); /* Ensure color remains */
+        height: 20px; /* Adjust thickness for smaller screens */
+    }
+
+    /* Rotation and centering remains the same for responsive x */
+}
