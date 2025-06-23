@@ -421,3 +421,45 @@ body.o-win-background {
 /* .game-status transition is already handled in the main styles; duplicate removed for clarity */
 
 }
+/* style.css */
+
+/* You can apply the same styles as newGameBtn to clearScoresBtn,
+   or give it a slightly different color if you want. */
+#clearScoresBtn {
+    /* Copy styles from #newGameBtn or create new ones */
+    padding: 12px 25px;
+    font-size: 1.1em;
+    background-color: #e74c3c; /* Example: A red color for reset action */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 30px;
+    margin-left: 10px; /* Add some space between buttons */
+    transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+#clearScoresBtn:hover {
+    background-color: #c0392b; /* Darker red on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+#clearScoresBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* If you want the buttons to stack nicely on small screens: */
+@media (max-width: 680px) {
+    #newGameBtn, #clearScoresBtn {
+        display: block; /* Make them block elements */
+        width: 90%; /* Take up more width */
+        margin-left: auto; /* Center them */
+        margin-right: auto;
+        margin-bottom: 10px; /* Add space between them when stacked */
+    }
+}

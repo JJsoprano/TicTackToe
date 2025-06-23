@@ -9,7 +9,8 @@ let xWinBurst; // Reference for the X-win burst element
 let llmCommentaryDisplay; // NEW: Reference for LLM commentary text
 let llmLoadingIndicator; // NEW: Reference for LLM loading indicator
 let turnMessageDisplay; // NEW: Reference for the turn-based message display
-let oWinEffect; // NEW: Reference for the O-win effect element
+let oWinEffect; // o wins
+let clearScoresBtn;
 // --- Game State Variables ---
 const boardState = ["", "", "", "", "", "", "", "", ""];
 let currentPlayer = "circle"; // Game starts with "circle" (O)
@@ -124,7 +125,18 @@ function updateScoreDisplay() {
     );
   }
 }
+function clearScores() {
+    playerOCircleWins = 0;
+    playerXCrossWins = 0;
+    ties = 0;
 
+    updateScoreDisplay(); // Update the displayed scores to 0
+    saveScores();         // Save these 0 scores to localStorage
+
+    // Provide a quick message to the player
+    updateTurnMessage("All scores reset!");
+    console.log("CLEAR_SCORES: All game scores have been cleared.");
+}
 // Winning combinations (indices of cells)
 const winningConditions = [
   [0, 1, 2],
@@ -322,7 +334,31 @@ function updateTurnMessage(message) {
     );
   }
 }
+document.addEventListener("DOMContentLoaded", () => {
+    // ... existing assignments ...
+    turnMessageDisplay = document.getElementById("turnMessage");
+    oWinEffect = document.getElementById("oWinEffect");
+    clearScoresBtn = document.getElementById("clearScoresBtn"); // NEW: Assign Clear Scores button
 
+    console.log("DOM_LOADED: DOM elements assigned:", {
+        // ... existing logs ...
+        turnMessageDisplay,
+        oWinEffect,
+        clearScoresBtn, // Log the new button
+    });
+
+    // ... (your existing loadScores, updateScoreDisplay, createBoard calls) ...
+
+    // Add event listener to the "Clear Scores" button
+    if (clearScoresBtn) {
+        clearScoresBtn.addEventListener("click", clearScores);
+        console.log("DOM_LOADED: Clear Scores button event listener added.");
+    } else {
+        console.warn("DOM_LOADED: clearScoresBtn is null, event listener not added.");
+    }
+
+    // ... (your existing newGameBtn event listener) ...
+});
 /**
  *  Generates game commentary using the Gemini API (LLM).
  * @param {string} outcomeDescription A description of the game's outcome (e.g., "Player X won", "It was a tie").
