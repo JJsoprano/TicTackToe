@@ -11,7 +11,7 @@ body {
     flex-direction: column; /* Your preferred column layout */
     background-color: #e0e0e0; /* Light grey background from suggestions */
 }
-body.o-win.background{
+body.o-win-background{
     background-color: #2ecc71;
 }
 
@@ -244,6 +244,50 @@ h1 {
 }
 .hidden{
     display: none;
+    /* style.css */
+
+/* --- NEW: O-Win Effect (Pulsing Glow) --- */
+
+/* Base style for the O-win effect - hidden by default */
+.o-win-effect {
+    position: absolute; /* Allows precise positioning relative to its parent (game-container or body) */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centers the element */
+    width: 200px; /* Initial size */
+    height: 200px; /* Initial size */
+    border-radius: 50%; /* Make it circular */
+    background-color: rgba(66, 133, 244, 0.3); /* Light blue, semi-transparent base */
+    box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); /* Initial shadow for pulse */
+    opacity: 0; /* Start invisible */
+    pointer-events: none; /* Allows clicks on game squares behind it */
+    z-index: 9; /* Ensure it's above the board but below X burst (which has z-index 999) */
+}
+
+/* Style for when the O-win effect is active */
+.o-win-effect.active {
+    animation: oPulseGlow 1.5s ease-out forwards; /* Apply the pulsing animation */
+}
+
+/* Keyframes for the O-win pulsing glow animation */
+@keyframes oPulseGlow {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5); /* Start smaller */
+        opacity: 0; /* Fully transparent */
+        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); /* No glow */
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2); /* Grow larger */
+        opacity: 1; /* Fully visible */
+        box-shadow: 0 0 40px 20px rgba(66, 133, 244, 0.8), /* Inner glow */
+                    0 0 80px 40px rgba(66, 133, 244, 0.5); /* Outer glow */
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1); /* Settle at final size */
+        opacity: 0; /* Fade out */
+        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); /* Glow fades out */
+    }
+}
 }
 @keyframes pulse{
     0%{opacity:0.6;}
@@ -317,5 +361,63 @@ h1 {
         padding: 10px;
         font-size: 0.9em;
     }
+    /* --- NEW: Turn Message Display --- */
+.turn-message {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #4a69bd; /* A pleasant blue for turn messages */
+    margin-bottom: 15px;
+    min-height: 1.5em; /* Prevent layout shift */
+    text-align: center;
+    opacity: 0; /* Start invisible for animation */
+    transition: opacity 0.3s ease-in-out; /* Smooth transition */
+}
+
+/* Animation for the turn message */
+.turn-message.fade-in-out {
+    animation: fadeInOutMessage 3s forwards; /* Fade in, stay, then fade out */
+}
+
+@keyframes fadeInOutMessage {
+    0% { opacity: 0; transform: translateY(-10px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(10px); }
+}
+
+/* --- NEW: Cell Mark (X/O) Animation --- */
+.fade-in-scale {
+    animation: fadeInScale 0.3s ease-out forwards;
+}
+
+@keyframes fadeInScale {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* --- NEW: Info Display Flash Animation for Win/Draw --- */
+.flash-text {
+    animation: flashText 1.5s infinite alternate; /* Flash continuously when active */
+}
+
+@keyframes flashText {
+    0% { color: #3498db; transform: scale(1); } /* Original blue */
+    50% { color: #e74c3c; transform: scale(1.05); } /* Red for emphasis */
+    100% { color: #3498db; transform: scale(1); } /* Back to original */
+}
+
+/* Update for O-Win background color for better visibility */
+body.o-win-background {
+    background-color: #2ecc71; /* Keep this as is for O win */
+}
+
+/* Optional: Minor adjustment to x-win-burst if needed */
+.x-win-burst.active {
+    animation: burst-animation 1.2s forwards ease-out; /* Existing animation */
+}
+
+/* Ensure existing animations are not overridden */
+/* Add this if you want the game status text itself to be more prominent for win/draw */
+/* .game-status transition is already handled in the main styles; duplicate removed for clarity */
 
 }

@@ -1,5 +1,4 @@
 // --- DOM Element References ---
-// Declare variables here using 'let', they will be assigned inside DOMContentLoaded
 let gameBoard;
 let infoDisplay;
 let playerOCircleScoreSpan;
@@ -9,7 +8,8 @@ let newGameBtn;
 let xWinBurst; // Reference for the X-win burst element
 let llmCommentaryDisplay; // NEW: Reference for LLM commentary text
 let llmLoadingIndicator; // NEW: Reference for LLM loading indicator
-
+let turnMessageDisplay; // NEW: Reference for the turn-based message display
+let oWinEffect; // NEW: Reference for the O-win effect element
 // --- Game State Variables ---
 const boardState = ["", "", "", "", "", "", "", "", ""];
 let currentPlayer = "circle"; // Game starts with "circle" (O)
@@ -168,6 +168,7 @@ function createBoard() {
     gameBoard.append(cellElement);
   });
   console.log("CREATE_BOARD: 9 squares created and added to the board.");
+  updateTurnMessage(`${capitalizePlayerName(currentPlayer)} goes first!`); // Initial message
 }
 
 /**
@@ -190,6 +191,8 @@ async function handleCellClick(event) {
   boardState[clickedCellId] = currentPlayer;
   const playerMark = document.createElement("div");
   playerMark.classList.add(currentPlayer);
+  // Add animation class
+  playerMark.classList.add("fade-in-scale");
   clickedCell.append(playerMark);
   console.log(
     `HANDLE_CLICK: Placed ${currentPlayer} mark on cell ${clickedCellId}.`
@@ -207,43 +210,55 @@ async function handleCellClick(event) {
 /**
  * Handles logic when a player wins.
  */
+// tictactoe.js
+
+/**
+ * Handles logic when a player wins.
+ */
 async function handleWin() {
-  console.log("HANDLE_CLICK: Win detected!");
-  gameEnded = true;
+    console.log("HANDLE_CLICK: Win detected!");
+    gameEnded = true;
 
-  let outcomeMessage = "";
-  let winnerPlayer = "";
+    let outcomeMessage = "";
+    let winnerPlayer = "";
 
-  if (currentPlayer === "circle") {
-    playerOCircleWins++;
-    document.body.classList.add("o-win-background");
-    outcomeMessage = "Player Circle won";
-    winnerPlayer = "Circle";
-  } else {
-    playerXCrossWins++;
-    if (xWinBurst) {
-      xWinBurst.classList.add("active");
+    // This is the SINGLE, correct block for win logic
+    if (currentPlayer === "circle") {
+        playerOCircleWins++;
+        document.body.classList.add("o-win-background");
+        if (oWinEffect) { // Correctly placed O-win effect activation
+            oWinEffect.classList.add("active");
+        }
+        outcomeMessage = "Player Circle won";
+        winnerPlayer = "Circle";
+    } else { // currentPlayer === "x"
+        playerXCrossWins++;
+        if (xWinBurst) {
+            xWinBurst.classList.add("active");
+        }
+        outcomeMessage = "Player Cross won";
+        winnerPlayer = "Cross";
     }
-    outcomeMessage = "Player Cross won";
-    winnerPlayer = "Cross";
-  }
 
-  if (infoDisplay) {
-    infoDisplay.innerHTML = `${winnerPlayer} is the winner!`;
-  }
+    if (infoDisplay) {
+        infoDisplay.innerHTML = `${winnerPlayer} is the winner!`;
+        infoDisplay.classList.add("flash-text"); // Add class for flashing
+    }
+    updateTurnMessage(`${winnerPlayer} wins! Game over!`); // Update turn message
+    console.log("HANDLE_CLICK: Scores incremented.", {
+        playerOCircleWins,
+        playerXCrossWins,
+    });
+    updateScoreDisplay();
+    saveScores();
+    if (newGameBtn) {
+        newGameBtn.style.display = "inline";
+    }
 
-  console.log("HANDLE_CLICK: Scores incremented.", {
-    playerOCircleWins,
-    playerXCrossWins,
-  });
-  updateScoreDisplay();
-  saveScores();
-  if (newGameBtn) {
-    newGameBtn.style.display = "inline";
-  }
-
-  await generateGameCommentary(outcomeMessage);
+    // The API call uses the correctly set outcomeMessage
+    await generateGameCommentary(outcomeMessage);
 }
+
 
 /**
  * Handles logic when the game is a draw.
@@ -252,11 +267,13 @@ async function handleDraw() {
   console.log("HANDLE_CLICK: Draw detected!");
   if (infoDisplay) {
     infoDisplay.innerHTML = "It's a draw!";
+    infoDisplay.classList.add("flash-text"); // Add class for flashing
   }
   gameEnded = true;
 
   ties++;
   let outcomeMessage = "It was a tie";
+  updateTurnMessage(`It's a tie! No winner this round.`); // Update turn message
 
   console.log("HANDLE_CLICK: Ties incremented.", { ties });
   updateScoreDisplay();
@@ -274,13 +291,40 @@ async function handleDraw() {
 function switchPlayer() {
   currentPlayer = currentPlayer === "circle" ? "x" : "circle";
   if (infoDisplay) {
-    infoDisplay.textContent = `It is now ${currentPlayer}'s turn`;
+    infoDisplay.textContent = `It is now ${capitalizePlayerName(
+      currentPlayer
+    )}'s turn`;
   }
+  updateTurnMessage(`It's ${capitalizePlayerName(currentPlayer)}'s turn!`); // Update turn message
   console.log("HANDLE_CLICK: Switched turn to:", currentPlayer);
 }
 
 /**
- * NEW: Generates game commentary using the Gemini API (LLM).
+ * Helper function to capitalize player names for display.
+ */
+function capitalizePlayerName(player) {
+  return player.charAt(0).toUpperCase() + player.slice(1);
+}
+
+/**
+ * NEW: Displays a message in the designated turn message area with a fade effect.
+ * @param {string} message The message to display.
+ */
+function updateTurnMessage(message) {
+  if (turnMessageDisplay) {
+    turnMessageDisplay.classList.remove("fade-in-out"); // Remove to re-trigger animation
+    const _ = turnMessageDisplay.offsetWidth; // Trigger reflow
+    turnMessageDisplay.textContent = message;
+    turnMessageDisplay.classList.add("fade-in-out");
+  } else {
+    console.warn(
+      "UPDATE_TURN_MESSAGE: turnMessageDisplay is null. Cannot update message."
+    );
+  }
+}
+
+/**
+ *  Generates game commentary using the Gemini API (LLM).
  * @param {string} outcomeDescription A description of the game's outcome (e.g., "Player X won", "It was a tie").
  */
 async function generateGameCommentary(outcomeDescription) {
@@ -301,7 +345,8 @@ async function generateGameCommentary(outcomeDescription) {
   chatHistory.push({ role: "user", parts: [{ text: prompt }] });
 
   const payload = { contents: chatHistory };
-  const apiKey = ""; // Canvas will automatically provide the API key at runtime
+  const apiKey = "AIzaSyD--HSCi-IrTk-u708ID-CI8edXEkbZmX0"; // REMOVED: Do not hardcode API keys in client-side code
+  //const apiKey = window.GEMINI_API_KEY || ""; // Retrieve API key securely (set via environment or injected at runtime)
 
   try {
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
@@ -370,6 +415,7 @@ function restartGame() {
   currentPlayer = "circle";
   if (infoDisplay) {
     infoDisplay.innerHTML = "Circle goes first";
+    infoDisplay.classList.remove("flash-text"); // Remove flash class on restart
     console.log("RESTART_GAME: Info display reset.");
   }
   if (newGameBtn) {
@@ -400,11 +446,13 @@ function restartGame() {
   console.log("RESTART_GAME: Visual board cleared.");
 
   updateScoreDisplay();
+  updateTurnMessage(`${capitalizePlayerName(currentPlayer)}'s turn!`); // Reset turn message
   console.log("RESTART_GAME: updateScoreDisplay called at end of restartGame.");
 }
 
 // --- Ensure DOM is fully loaded before running game setup ---
 document.addEventListener("DOMContentLoaded", () => {
+  oWinEffect = document.getElementById("oWinEffect");
   console.log("DOM_LOADED: DOMContentLoaded event fired.");
   // Assign DOM element references here, ensuring they exist
   gameBoard = document.querySelector("#gameboard");
@@ -416,6 +464,7 @@ document.addEventListener("DOMContentLoaded", () => {
   xWinBurst = document.getElementById("xWinBurst");
   llmCommentaryDisplay = document.getElementById("llmCommentaryDisplay"); // NEW: Assign LLM commentary display
   llmLoadingIndicator = document.getElementById("llmLoadingIndicator"); // NEW: Assign LLM loading indicator
+  turnMessageDisplay = document.getElementById("turnMessage"); // NEW: Assign turn message display
   console.log("DOM_LOADED: DOM elements assigned:", {
     gameBoard,
     infoDisplay,
@@ -426,6 +475,7 @@ document.addEventListener("DOMContentLoaded", () => {
     xWinBurst,
     llmCommentaryDisplay,
     llmLoadingIndicator,
+    turnMessageDisplay, // Log the new element
   });
 
   // Load scores from localStorage when the page first loads
@@ -434,10 +484,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial update to display scores after loading them
   updateScoreDisplay();
 
-  // Set initial info display text
-  if (infoDisplay) {
-    infoDisplay.innerHTML = "Circle goes first";
-  }
+  // Set initial info display text - this will now be handled by updateTurnMessage
+  // if (infoDisplay) {
+  //   infoDisplay.innerHTML = "Circle goes first";
+  // }
 
   // Call createBoard to set up the game board when the script loads
   createBoard();
