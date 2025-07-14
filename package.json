@@ -1,0 +1,24 @@
+{
+  "name": "tictacktoe",
+  "version": "1.0.0",
+  "main": "tictactoe.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JJsoprano/TicTackToe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JJsoprano/TicTackToe/issues"
+  },
+  "homepage": "https://github.com/JJsoprano/TicTackToe#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1"
+  }
+}

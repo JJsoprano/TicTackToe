@@ -126,16 +126,16 @@ function updateScoreDisplay() {
   }
 }
 function clearScores() {
-    playerOCircleWins = 0;
-    playerXCrossWins = 0;
-    ties = 0;
+  playerOCircleWins = 0;
+  playerXCrossWins = 0;
+  ties = 0;
 
-    updateScoreDisplay(); // Update the displayed scores to 0
-    saveScores();         // Save these 0 scores to localStorage
+  updateScoreDisplay(); // Update the displayed scores to 0
+  saveScores(); // Save these 0 scores to localStorage
 
-    // Provide a quick message to the player
-    updateTurnMessage("All scores reset!");
-    console.log("CLEAR_SCORES: All game scores have been cleared.");
+  // Provide a quick message to the player
+  updateTurnMessage("All scores reset!");
+  console.log("CLEAR_SCORES: All game scores have been cleared.");
 }
 // Winning combinations (indices of cells)
 const winningConditions = [
@@ -228,53 +228,51 @@ async function handleCellClick(event) {
  * Handles logic when a player wins.
  */
 async function handleWin() {
-    console.log("HANDLE_CLICK: Win detected!");
-    gameEnded = true;
+  console.log("HANDLE_CLICK: Win detected!");
+  gameEnded = true;
 
-    let outcomeMessage = "";
-    let winnerPlayer = "";
+  let outcomeMessage = "";
+  let winnerPlayer = "";
 
-    // This is the SINGLE, correct block for win logic
-    if (currentPlayer === "circle") {
-        playerOCircleWins++;
-        document.body.classList.add("o-win-background");
-        if (oWinEffect) { // Correctly placed O-win effect activation
-            oWinEffect.classList.add("active");
-        }
-        outcomeMessage = "Player Circle won";
-        winnerPlayer = "Circle";
-    } else { // currentPlayer === "x"
-        playerXCrossWins++;
-        if (xWinBurst) {
-            xWinBurst.classList.add("active");
-        }
-        outcomeMessage = "Player Cross won";
-        winnerPlayer = "Cross";
+  // This is the SINGLE, correct block for win logic
+  if (currentPlayer === "circle") {
+    playerOCircleWins++;
+    document.body.classList.add("o-win-background");
+    if (oWinEffect) {
+      // Correctly placed O-win effect activation
+      oWinEffect.classList.add("active");
     }
-
-    if (infoDisplay) {
-        infoDisplay.innerHTML = `${winnerPlayer} is the winner!`;
-        infoDisplay.classList.add("flash-text"); // Add class for flashing
+    outcomeMessage = "Player Circle won";
+    winnerPlayer = "Circle";
+  } else {
+    // currentPlayer === "x"
+    playerXCrossWins++;
+    if (xWinBurst) {
+      xWinBurst.classList.add("active");
     }
-    updateTurnMessage(`${winnerPlayer} wins! Game over!`); // Update turn message
-    console.log("HANDLE_CLICK: Scores incremented.", {
-        playerOCircleWins,
-        playerXCrossWins,
-    });
-    updateScoreDisplay();
-    saveScores();
-    if (newGameBtn) {
-        newGameBtn.style.display = "inline";
-    }
+    outcomeMessage = "Player Cross won";
+    winnerPlayer = "Cross";
+  }
 
-    // The API call uses the correctly set outcomeMessage
-    await generateGameCommentary(outcomeMessage);
+  if (infoDisplay) {
+    infoDisplay.innerHTML = `${winnerPlayer} is the winner!`;
+    infoDisplay.classList.add("flash-text"); // Add class for flashing
+  }
+  updateTurnMessage(`${winnerPlayer} wins! Game over!`); // Update turn message
+  console.log("HANDLE_CLICK: Scores incremented.", {
+    playerOCircleWins,
+    playerXCrossWins,
+  });
+  updateScoreDisplay();
+  saveScores();
+  if (newGameBtn) {
+    newGameBtn.style.display = "inline";
+  }
+
+  // The API call uses the correctly set outcomeMessage
+  await generateGameCommentary(outcomeMessage);
 }
-
-
-/**
- * Handles logic when the game is a draw.
- */
+/*** Handles logic when the game is a draw*/
 async function handleDraw() {
   console.log("HANDLE_CLICK: Draw detected!");
   if (infoDisplay) {
@@ -282,7 +280,6 @@ async function handleDraw() {
     infoDisplay.classList.add("flash-text"); // Add class for flashing
   }
   gameEnded = true;
-
   ties++;
   let outcomeMessage = "It was a tie";
   updateTurnMessage(`It's a tie! No winner this round.`); // Update turn message
@@ -298,8 +295,7 @@ async function handleDraw() {
 }
 
 /**
- * Switches the current player and updates the info display.
- */
+ /* Switches the current player and updates the info display*/
 function switchPlayer() {
   currentPlayer = currentPlayer === "circle" ? "x" : "circle";
   if (infoDisplay) {
@@ -312,20 +308,20 @@ function switchPlayer() {
 }
 
 /**
- * Helper function to capitalize player names for display.
+ * Helper function to capitalize player names for display
  */
 function capitalizePlayerName(player) {
   return player.charAt(0).toUpperCase() + player.slice(1);
 }
 
 /**
- * NEW: Displays a message in the designated turn message area with a fade effect.
+ *  Displays a message in the designated turn message area with a fade effect.
  * @param {string} message The message to display.
  */
 function updateTurnMessage(message) {
   if (turnMessageDisplay) {
     turnMessageDisplay.classList.remove("fade-in-out"); // Remove to re-trigger animation
-    const _ = turnMessageDisplay.offsetWidth; // Trigger reflow
+    turnMessageDisplay.offsetWidth; // Trigger reflow
     turnMessageDisplay.textContent = message;
     turnMessageDisplay.classList.add("fade-in-out");
   } else {
@@ -335,29 +331,25 @@ function updateTurnMessage(message) {
   }
 }
 document.addEventListener("DOMContentLoaded", () => {
-    // ... existing assignments ...
-    turnMessageDisplay = document.getElementById("turnMessage");
-    oWinEffect = document.getElementById("oWinEffect");
-    clearScoresBtn = document.getElementById("clearScoresBtn"); // NEW: Assign Clear Scores button
+  turnMessageDisplay = document.getElementById("turnMessage");
+  oWinEffect = document.getElementById("oWinEffect");
+  clearScoresBtn = document.getElementById("clearScoresBtn"); // NEW: Assign Clear Scores button
 
-    console.log("DOM_LOADED: DOM elements assigned:", {
-        // ... existing logs ...
-        turnMessageDisplay,
-        oWinEffect,
-        clearScoresBtn, // Log the new button
-    });
-
-    // ... (your existing loadScores, updateScoreDisplay, createBoard calls) ...
-
-    // Add event listener to the "Clear Scores" button
-    if (clearScoresBtn) {
-        clearScoresBtn.addEventListener("click", clearScores);
-        console.log("DOM_LOADED: Clear Scores button event listener added.");
-    } else {
-        console.warn("DOM_LOADED: clearScoresBtn is null, event listener not added.");
-    }
-
-    // ... (your existing newGameBtn event listener) ...
+  console.log("DOM_LOADED: DOM elements assigned:", {
+    // ... existing logs ...
+    turnMessageDisplay,
+    oWinEffect,
+    clearScoresBtn, // Log the new button
+  });
+  // Add event listener to the "Clear Scores" button
+  if (clearScoresBtn) {
+    clearScoresBtn.addEventListener("click", clearScores);
+    console.log("DOM_LOADED: Clear Scores button event listener added.");
+  } else {
+    console.warn(
+      "DOM_LOADED: clearScoresBtn is null, event listener not added."
+    );
+  }
 });
 /**
  *  Generates game commentary using the Gemini API (LLM).
@@ -370,7 +362,6 @@ async function generateGameCommentary(outcomeDescription) {
     );
     return;
   }
-
   llmCommentaryDisplay.textContent = ""; // Clear previous commentary
   llmLoadingIndicator.classList.remove("hidden"); // Show loading indicator
   console.log("GENERATE_COMMENTARY: Generating commentary...");
@@ -381,8 +372,7 @@ async function generateGameCommentary(outcomeDescription) {
   chatHistory.push({ role: "user", parts: [{ text: prompt }] });
 
   const payload = { contents: chatHistory };
-  const apiKey = "AIzaSyD--HSCi-IrTk-u708ID-CI8edXEkbZmX0"; // REMOVED: Do not hardcode API keys in client-side code
-  //const apiKey = window.GEMINI_API_KEY || ""; // Retrieve API key securely (set via environment or injected at runtime)
+  const apiKey = "AIzaSyD--HSCi-IrTk-u708ID-CI8edXEkbZmX0";
 
   try {
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
@@ -402,7 +392,7 @@ async function generateGameCommentary(outcomeDescription) {
       llmCommentaryDisplay.textContent = `✨ ${text}`; // Add sparkle emoji!
       console.log("GENERATE_COMMENTARY: LLM commentary received:", text);
     } else {
-      llmCommentaryDisplay.textContent = "✨ A thrilling game, indeed!"; // Fallback
+      llmCommentaryDisplay.textContent = "✨ A thrilling game, indeed!"; // Fallback message 
       console.warn(
         "GENERATE_COMMENTARY: LLM response structure unexpected or empty."
       );
@@ -415,7 +405,6 @@ async function generateGameCommentary(outcomeDescription) {
     llmLoadingIndicator.classList.add("hidden"); // Hide loading indicator
   }
 }
-
 /**
  * Checks if the current player has achieved a winning combination.
  * @returns {boolean} True if the current player has won, false otherwise.
@@ -430,8 +419,7 @@ function checkForWin() {
     );
   });
 }
-
-/**
+/*
  * Checks if the game is a draw.
  * A draw occurs if no player has won and all cells are filled.
  * @returns {boolean} True if the game is a draw, false otherwise.
@@ -442,7 +430,6 @@ function checkForDraw() {
 
 /**
  * Resets the game to its initial state for a new round (scores are preserved).
- * Clears the board, resets player turn, hides "New Game" button, and updates info display.
  */
 function restartGame() {
   console.log("RESTART_GAME: Starting game restart process.");
@@ -451,7 +438,7 @@ function restartGame() {
   currentPlayer = "circle";
   if (infoDisplay) {
     infoDisplay.innerHTML = "Circle goes first";
-    infoDisplay.classList.remove("flash-text"); // Remove flash class on restart
+    infoDisplay.classList.remove("flash-text"); 
     console.log("RESTART_GAME: Info display reset.");
   }
   if (newGameBtn) {
@@ -486,7 +473,7 @@ function restartGame() {
   console.log("RESTART_GAME: updateScoreDisplay called at end of restartGame.");
 }
 
-// --- Ensure DOM is fully loaded before running game setup ---
+//  Ensure DOM is fully loaded before running game setup
 document.addEventListener("DOMContentLoaded", () => {
   oWinEffect = document.getElementById("oWinEffect");
   console.log("DOM_LOADED: DOMContentLoaded event fired.");
@@ -519,16 +506,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initial update to display scores after loading them
   updateScoreDisplay();
-
-  // Set initial info display text - this will now be handled by updateTurnMessage
-  // if (infoDisplay) {
-  //   infoDisplay.innerHTML = "Circle goes first";
-  // }
-
   // Call createBoard to set up the game board when the script loads
   createBoard();
 
-  // Add event listener to the "New Game" button to restart the game
+  // Add event listeners to the "New Game" button to restart the game
   if (newGameBtn) {
     newGameBtn.addEventListener("click", restartGame);
     console.log("DOM_LOADED: New Game button event listener added.");

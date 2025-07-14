@@ -1,4 +1,4 @@
-/* Basic reset and body styling - Merged from your code and suggestions */
+/* Basic reset and body styling  */
 body {
     font-family: 'Inter', Arial, sans-serif; /* Using Inter font for a modern look */
     margin: 0;
@@ -15,7 +15,7 @@ body.o-win-background{
     background-color: #2ecc71;
 }
 
-/* Container for the entire game - From suggestions */
+/* Container for the entire game  */
 .game-container {
     background-color: #ffffff; /* White background for the container */
     padding: 30px;
@@ -30,14 +30,14 @@ body.o-win-background{
     align-items: center; /* Center items horizontally */
 }
 
-/* Game title styling - From suggestions */
+/* Game title styling  */
 h1 {
     color: #2c3e50; /* Darker blue-grey color */
     margin-bottom: 25px;
     font-size: 2.2em;
 }
 
-/* Scores section styling - From suggestions */
+/* Scores section styling */
 .scores {
     display: flex;
     justify-content: space-around; /* Distribute items evenly */
@@ -58,73 +58,72 @@ h1 {
 }
 
 .scores span {
-    color: #e67e22; /* Orange color for scores */
+    color: #e67e22; 
     margin-left: 5px;
 }
 
-/* Game status message - From suggestions */
+/* Game status message*/
 .game-status {
     margin-bottom: 25px;
     font-size: 1.3em;
     color: #3498db; /* Blue for messages */
-    min-height: 1.5em; /* Prevent layout shift when message changes */
+    min-height: 1.5em; 
     font-weight: bold;
 }
 
-/* Main game board grid - Primarily your code, with added suggestions */
+/* Main game board grid */
 #gameboard {
-    width: 600px; /* Your specified width */
-    height: 600px; /* Your specified height */
-    background-color: black; /* Your specified background */
+    width: 600px; 
+    height: 600px; 
+    background-color: black; /* background */
     
     display: grid; 
     grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
     grid-template-rows: repeat(3, 1fr);    /* 3 equal rows */
     gap: 8px; /* Gap between grid items */
 
-    border: solid 1px black; /* This border is around the whole 600x600 board */
-    border-radius: 10px; /* Rounded corners from suggestions */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Deeper shadow from suggestions */
-    overflow: hidden; /* Ensures contents stay within rounded corners */
-    margin: 25px auto; /* Centering and spacing from suggestions */
-    max-width: 90%; /* Added for responsiveness */
-    aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
+    border: solid 1px black; /* This border is around the  board */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
+    overflow: hidden;
+    margin: 25px auto;
+    max-width: 90%;
+    aspect-ratio: 1 / 1;
 }
 
-/* Individual cell styling - Primarily your code, with added suggestions */
-.square { /* Retaining your .square class name */
-    background-color: white; /* Your specified background */
-    border: solid 6px #cccccc; /* Changed from black to light grey */
-    box-sizing: border-box; /* Your specified box-sizing */
+
+.square { 
+    background-color: white; 
+    border: solid 6px #cccccc; 
+    box-sizing: border-box; 
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 4em; /* Increased font size for X/O from suggestions */
+    font-size: 4em; 
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth hover effect */
-    border-radius: 8px; /* Rounded corners for cells */
+    border-radius: 8px; 
 }
 
-.square:hover { /* Added hover effect from suggestions */
+.square:hover { /* Added hover */
     background-color: #dcdde1; /* Slightly darker on hover */
     transform: scale(1.02); /* Slight scale effect on hover */
 }
 
-/* Player specific styling for Circle - Your original code with color matching */
+/* Player specific styling for Circle  */
 .circle {
-    height: 95%; /* Adjusted size to fit inside responsive square */
-    width: 95%; /* Adjusted size to fit inside responsive square */
+    height: 95%; 
+    width: 95%;
     border-radius: 50%;
-    border: 25px solid rgb(36, 211, 80); /* Your specific color */
+    border: 25px solid rgb(36, 211, 80); 
     box-sizing: border-box;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
 }
 
-/* Player specific styling for Cross - Your original code with color matching */
-.x { /* Retaining your .x class name */
-    height: 95%; /* Adjusted size to fit inside responsive square */
-    width: 95%; /* Adjusted size to fit inside responsive square */
+.x {
+    height: 95%; 
+    width: 95%; 
     position: relative;
 }
 
@@ -132,7 +131,6 @@ h1 {
     content: "";
     position: absolute;
     background-color: rgb(219, 32, 64); /* Your specific color */
-    /* Common properties for both bars */
     height: 25px; /* Thickness of the X bars */
     width: 100%; /* Make bars span the full width of the parent .x */
     top: 50%; /* Center vertically */
@@ -141,23 +139,23 @@ h1 {
 }
 
 .x:before {
-    /* FIX: Rotate this bar for one diagonal of the X */
+    /* Rotate this bar for one diagonal of the X */
     transform: translateY(-50%) rotate(45deg); 
 }
 
 .x:after {
-    /* FIX: Rotate this bar for the other diagonal of the X */
+    /*  Rotate this bar for the other diagonal of the X */
     transform: translateY(-50%) rotate(-45deg);
 }
 
-/* Styling for the New Game button - From suggestions */
+/* Styling for the New Game button  */
 #newGameBtn {
     padding: 12px 25px;
     font-size: 1.1em;
-    background-color: #3498db; /* Blue button */
+    background-color: #3498db; /* Blue button changed from light blue*/
     color: white;
     border: none;
-    border-radius: 8px; /* Rounded button corners */
+    border-radius: 8px; /* Rounded button corners upgraded to pretty  */
     cursor: pointer;
     margin-top: 30px;
     transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
@@ -167,8 +165,8 @@ h1 {
 }
 
 #newGameBtn:hover {
-    background-color: #2980b9; /* Darker blue on hover */
-    transform: translateY(-2px); /* Slight lift effect */
+    background-color: #2980b9; 
+    transform: translateY(-2px); 
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
 }
 
@@ -195,7 +193,7 @@ h1 {
 .x-win-burst.active {
     animation: burst-animation 1.2s forwards ease-out; /* Apply animation when 'active' class is present */
 }
-
+/*made it pretty*/
 @keyframes burst-animation {
     0% {
         transform: translate(-50%,-50%) scale(0); /* Start very small */
@@ -206,14 +204,14 @@ h1 {
         opacity: 1; /* Quickly become fully opaque */
     }
     50% {
-        transform: translate(-50%, -50%) scale(1.5); /* Expand to full size */
+        transform: translate(-50%, -50%) scale(1.5); 
         opacity: 0.8;
-        box-shadow: 0 0 80px 40px rgba(255, 140, 0, 0.8); /* Max glow */
+        box-shadow: 0 0 80px 40px rgba(255, 140, 0, 0.8);
     }
     100% {
-        transform: translate(-50%, -50%) scale(2.5); /* Further expand and fade out */
+        transform: translate(-50%, -50%) scale(2.5); 
         opacity: 0;
-        box-shadow: 0 0 120px 50px rgba(255, 140, 0, 0); /* Fade out glow */
+        box-shadow: 0 0 120px 50px rgba(255, 140, 0, 0); 
     }
 }
 .llm-commentary-section{
@@ -221,7 +219,7 @@ h1 {
     padding: 15px;
     background-color: white;
     border-radius: 10px;
-    box-shadow: insert 0 2px 5px rgba(0,0,0,0,0.05);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
     width: 90%;
     max-width: 580px;
     min-height: 50px;
@@ -244,50 +242,47 @@ h1 {
 }
 .hidden{
     display: none;
-    /* style.css */
+}
 
-/* --- NEW: O-Win Effect (Pulsing Glow) --- */
-
-/* Base style for the O-win effect - hidden by default */
+/* Base style for the O-win effect */
 .o-win-effect {
     position: absolute; /* Allows precise positioning relative to its parent (game-container or body) */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); /* Centers the element */
-    width: 200px; /* Initial size */
-    height: 200px; /* Initial size */
-    border-radius: 50%; /* Make it circular */
-    background-color: rgba(66, 133, 244, 0.3); /* Light blue, semi-transparent base */
-    box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); /* Initial shadow for pulse */
-    opacity: 0; /* Start invisible */
-    pointer-events: none; /* Allows clicks on game squares behind it */
-    z-index: 9; /* Ensure it's above the board but below X burst (which has z-index 999) */
+    width: 200px;
+    height: 200px; 
+    border-radius: 50%; 
+    background-color: rgba(66, 133, 244, 0.3); 
+    box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); 
+    opacity: 0; 
+    pointer-events: none; 
+    z-index: 9; 
 }
 
-/* Style for when the O-win effect is active */
+/* Style for when the O-win effect is active!! */
 .o-win-effect.active {
     animation: oPulseGlow 1.5s ease-out forwards; /* Apply the pulsing animation */
 }
 
-/* Keyframes for the O-win pulsing glow animation */
+/* Keyframes for the O-win pulsing glow animation! */
 @keyframes oPulseGlow {
     0% {
-        transform: translate(-50%, -50%) scale(0.5); /* Start smaller */
-        opacity: 0; /* Fully transparent */
-        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); /* No glow */
+        transform: translate(-50%, -50%) scale(0.5); 
+        opacity: 0;  /*Not Visable*/
+        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); 
     }
     50% {
         transform: translate(-50%, -50%) scale(1.2); /* Grow larger */
         opacity: 1; /* Fully visible */
-        box-shadow: 0 0 40px 20px rgba(66, 133, 244, 0.8), /* Inner glow */
-                    0 0 80px 40px rgba(66, 133, 244, 0.5); /* Outer glow */
+        box-shadow: 0 0 40px 20px rgba(66, 133, 244, 0.8), /* Inner */
+                    0 0 80px 40px rgba(66, 133, 244, 0.5); /* Outer */
     }
     100% {
         transform: translate(-50%, -50%) scale(1); /* Settle at final size */
         opacity: 0; /* Fade out */
         box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); /* Glow fades out */
     }
-}
 }
 @keyframes pulse{
     0%{opacity:0.6;}
@@ -317,7 +312,6 @@ h1 {
         font-size: 1.1em;
         margin-bottom: 20px;
     }
-
     #gameboard {
         width: 100%; /* Make board full width on smaller screens */
         height: auto; /* Allow height to adjust */
@@ -333,19 +327,18 @@ h1 {
     .circle {
         height: 95%; /* Adjust circle size to fit responsive square */
         width: 95%;
-        border-width: 15px; /* Adjust border thickness */
+        border-width: 15px;
     }
 
     .x {
-        height: 95%; /* Adjust x size to fit responsive square */
+        height: 95%; 
         width: 95%;
     }
 
     .x:before, .x:after {
         background-color: rgb(219, 32, 64); /* Ensure color remains */
-        height: 20px; /* Adjust thickness for smaller screens */
-     }
-
+        height: 20px; /*  thickness for smaller screens */
+    }
     #newGameBtn {
         padding: 10px 20px;
         font-size: 1em;
@@ -356,20 +349,22 @@ h1 {
         width: 150px; /* Smaller burst on small screens */
         height: 150px;
     }
-
+/*a responsive adjustment found within a media query screen */
     .llm-commentary-section {
         padding: 10px;
         font-size: 0.9em;
     }
-    /* --- NEW: Turn Message Display --- */
+} /* <-- Move this closing brace here to properly end the media query */
+
+/*  NEW: Turn Message Display  */
 .turn-message {
     font-size: 1.2em;
     font-weight: bold;
-    color: #4a69bd; /* A pleasant blue for turn messages */
+    color: #4a69bd; /* pleasant blue for turn messages */
     margin-bottom: 15px;
-    min-height: 1.5em; /* Prevent layout shift */
+    min-height: 1.5em; /* prevent layout shift */
     text-align: center;
-    opacity: 0; /* Start invisible for animation */
+    opacity: 0; /* invisible for animation */
     transition: opacity 0.3s ease-in-out; /* Smooth transition */
 }
 
@@ -377,7 +372,9 @@ h1 {
 .turn-message.fade-in-out {
     animation: fadeInOutMessage 3s forwards; /* Fade in, stay, then fade out */
 }
-
+/*defines a CSS animation that makes an element fade in, 
+stay visible for a period,and then fade out, while also moving slightly
+up and then down.*/
 @keyframes fadeInOutMessage {
     0% { opacity: 0; transform: translateY(-10px); }
     10% { opacity: 1; transform: translateY(0); }
@@ -385,7 +382,7 @@ h1 {
     100% { opacity: 0; transform: translateY(10px); }
 }
 
-/* --- NEW: Cell Mark (X/O) Animation --- */
+/* nEW: Cell Mark (X/O) Animation  */
 .fade-in-scale {
     animation: fadeInScale 0.3s ease-out forwards;
 }
@@ -395,7 +392,7 @@ h1 {
     100% { transform: scale(1); opacity: 1; }
 }
 
-/* --- NEW: Info Display Flash Animation for Win/Draw --- */
+/* Info Display Flash Animation for Win/Draw --- */
 .flash-text {
     animation: flashText 1.5s infinite alternate; /* Flash continuously when active */
 }
@@ -411,31 +408,21 @@ body.o-win-background {
     background-color: #2ecc71; /* Keep this as is for O win */
 }
 
-/* Optional: Minor adjustment to x-win-burst if needed */
+/* Optional:  small adjustment to x-win-burst if neededv */
 .x-win-burst.active {
     animation: burst-animation 1.2s forwards ease-out; /* Existing animation */
+/*apply sam styles as newGameBTn to clearscorev*/
 }
-
-/* Ensure existing animations are not overridden */
-/* Add this if you want the game status text itself to be more prominent for win/draw */
-/* .game-status transition is already handled in the main styles; duplicate removed for clarity */
-
-}
-/* style.css */
-
-/* You can apply the same styles as newGameBtn to clearScoresBtn,
-   or give it a slightly different color if you want. */
 #clearScoresBtn {
-    /* Copy styles from #newGameBtn or create new ones */
     padding: 12px 25px;
     font-size: 1.1em;
-    background-color: #e74c3c; /* Example: A red color for reset action */
+    background-color: #e74c3c;
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     margin-top: 30px;
-    margin-left: 10px; /* Add some space between buttons */
+    margin-left: 10px; 
     transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     font-weight: bold;
@@ -456,10 +443,10 @@ body.o-win-background {
 /* If you want the buttons to stack nicely on small screens: */
 @media (max-width: 680px) {
     #newGameBtn, #clearScoresBtn {
-        display: block; /* Make them block elements */
-        width: 90%; /* Take up more width */
-        margin-left: auto; /* Center them */
+        display: block; 
+        width: 90%; 
+        margin-left: auto; 
         margin-right: auto;
-        margin-bottom: 10px; /* Add space between them when stacked */
+        margin-bottom: 10px; 
     }
 }

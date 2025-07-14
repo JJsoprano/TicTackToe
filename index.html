@@ -8,6 +8,17 @@
   </head>
   <body>
     <div class="game-container">
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="tictactoe.js"></script>
+    </div>
+</body>
+  <body>
+      <!--  for the LLM commentary to display -->
+    <div class="llm-commentary-section">
+        <p id="llmCommentaryDisplay" class="llm-commentary-text"></p>
+        <p id="llmLoadingIndicator" class="llm-loading-indicator hidden">Generating commentary...</p>
+    </div>
+    <div class="game-container">
       <h1>Tic-Tac-Toe</h1>
       <div class="scores">
         <p>Player Circle Wins: <span id="playerOCircleScore">0</span></p>
@@ -20,18 +31,14 @@
       <div id="gameboard"></div>
 
       <button id="newGameBtn">Restart Game</button>
-      <body>
-    <div class="game-container">
-        <button id="clearScoresBtn">Clear Scores</button>
+      <button id="clearScoresBtn">Clear Scores</button>
+      <div></div>
 
+        
         </div>
 </body>
 
-      <!-- This section is CRITICAL for the LLM commentary to display -->
-    <div class="llm-commentary-section">
-        <p id="llmCommentaryDisplay" class="llm-commentary-text"></p>
-        <p id="llmLoadingIndicator" class="llm-loading-indicator hidden">Generating commentary...</p>
-    </div>
+    
     <div id="oWinEffect" class="o-win-effect"></div>
     <div id="xWinBurst" class="x-win-burst"></div>
 
