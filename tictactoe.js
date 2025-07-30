@@ -1,3 +1,5 @@
+const socket = io(); // This line connects your client to the Socket.IO
+
 // --- DOM Element References ---
 let gameBoard;
 let infoDisplay;
@@ -11,6 +13,12 @@ let llmLoadingIndicator; // NEW: Reference for LLM loading indicator
 let turnMessageDisplay; // NEW: Reference for the turn-based message display
 let oWinEffect; // o wins
 let clearScoresBtn;
+let joinGameSection;
+let createGameBtn;
+let joinGameInput;
+let joinGameBtn;
+let roomInfoDisplay;
+let lobbyMessageDisplay; // need for the code
 // --- Game State Variables ---
 const boardState = ["", "", "", "", "", "", "", "", ""];
 let currentPlayer = "circle"; // Game starts with "circle" (O)
@@ -21,12 +29,56 @@ let playerOCircleWins = 0;
 let playerXCrossWins = 0;
 let ties = 0;
 
+let myPlayerType =null;
+let currentRoomId = null;
+// ... existing DOM Element References ...
+let chatMessagesDisplay; // For displaying messages
+let chatInput;          // For typing messages
+let sendChatBtn;        // For the send button
+
 // --- Functions ---
 
 /**
  * Loads scores from localStorage.
  * If no scores are found, initializes them to 0.
  */
+// --- NEW: Chat Functions ---
+
+/**
+ * Sends a chat message to the server.
+ */
+function sendChatMessage() {
+    if (!currentRoomId) {
+        updateLobbyMessage("You must be in a game to chat.");
+        return;
+    }
+    const message = chatInput.value.trim();
+    if (message) {
+        // Emit the message along with the current room ID and player type
+        socket.emit('chatMessage', { roomId: currentRoomId, message: message, senderType: myPlayerType });
+        chatInput.value = ''; // Clear input field
+        // We will let the server broadcast the message back to us,
+        // so we don't append it locally here to ensure consistency.
+    }
+}
+
+/**
+ * Appends a chat message to the display area.
+ * @param {string} message The text message to display.
+ * @param {string} messageClass A class for styling (e.g., 'my-message', 'opponent-message', 'system-message').
+ */
+function appendChatMessage(message, messageClass = 'system-message') {
+    if (!chatMessagesDisplay) {
+        console.warn("appendChatMessage: chatMessagesDisplay not found.");
+        return;
+    }
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('chat-message', messageClass);
+    messageElement.textContent = message;
+    chatMessagesDisplay.appendChild(messageElement);
+    // Scroll to the bottom of the chat display
+    chatMessagesDisplay.scrollTop = chatMessagesDisplay.scrollHeight;
+}
 function loadScores() {
   try {
     const savedPlayerOCircleWins = localStorage.getItem(
@@ -129,10 +181,8 @@ function clearScores() {
   playerOCircleWins = 0;
   playerXCrossWins = 0;
   ties = 0;
-
   updateScoreDisplay(); // Update the displayed scores to 0
   saveScores(); // Save these 0 scores to localStorage
-
   // Provide a quick message to the player
   updateTurnMessage("All scores reset!");
   console.log("CLEAR_SCORES: All game scores have been cleared.");
@@ -272,6 +322,28 @@ async function handleWin() {
   // The API call uses the correctly set outcomeMessage
   await generateGameCommentary(outcomeMessage);
 }
+
+/**
+ * Displays messages in the lobby info area.
+ * @param {string} message The message to display.
+ */
+function updateLobbyMessage(message) {
+    if (lobbyMessageDisplay) {
+        lobbyMessageDisplay.textContent = message;
+    }
+}
+/*** Handles logic when the game is a draw*/
+async function handleDraw() {
+  console.log("HANDLE_CLICK: Draw detected!");
+  if (infoDisplay) {
+    infoDisplay.innerHTML = "It's a draw!";
+    infoDisplay.classList.add("flash-text"); // Add class for flashing
+  }
+  gameEnded = true;
+  ties++;
+  let outcomeMessage = "It was a tie";
+  updateTurnMessage(`It's a tie! No winner this round.`); // Update turn message
+}
 /*** Handles logic when the game is a draw*/
 async function handleDraw() {
   console.log("HANDLE_CLICK: Draw detected!");
@@ -295,7 +367,8 @@ async function handleDraw() {
 }
 
 /**
- /* Switches the current player and updates the info display*/
+ * Switches the current player and updates the info display.
+ */
 function switchPlayer() {
   currentPlayer = currentPlayer === "circle" ? "x" : "circle";
   if (infoDisplay) {
@@ -321,7 +394,7 @@ function capitalizePlayerName(player) {
 function updateTurnMessage(message) {
   if (turnMessageDisplay) {
     turnMessageDisplay.classList.remove("fade-in-out"); // Remove to re-trigger animation
-    turnMessageDisplay.offsetWidth; // Trigger reflow
+    const _ = turnMessageDisplay.offsetWidth; // Trigger reflow
     turnMessageDisplay.textContent = message;
     turnMessageDisplay.classList.add("fade-in-out");
   } else {
@@ -330,27 +403,7 @@ function updateTurnMessage(message) {
     );
   }
 }
-document.addEventListener("DOMContentLoaded", () => {
-  turnMessageDisplay = document.getElementById("turnMessage");
-  oWinEffect = document.getElementById("oWinEffect");
-  clearScoresBtn = document.getElementById("clearScoresBtn"); // NEW: Assign Clear Scores button
-
-  console.log("DOM_LOADED: DOM elements assigned:", {
-    // ... existing logs ...
-    turnMessageDisplay,
-    oWinEffect,
-    clearScoresBtn, // Log the new button
-  });
-  // Add event listener to the "Clear Scores" button
-  if (clearScoresBtn) {
-    clearScoresBtn.addEventListener("click", clearScores);
-    console.log("DOM_LOADED: Clear Scores button event listener added.");
-  } else {
-    console.warn(
-      "DOM_LOADED: clearScoresBtn is null, event listener not added."
-    );
-  }
-});
+// (Removed duplicate DOMContentLoaded handler. All DOM assignments and event listeners are handled in the main DOMContentLoaded at the bottom.)
 /**
  *  Generates game commentary using the Gemini API (LLM).
  * @param {string} outcomeDescription A description of the game's outcome (e.g., "Player X won", "It was a tie").
@@ -392,7 +445,7 @@ async function generateGameCommentary(outcomeDescription) {
       llmCommentaryDisplay.textContent = `✨ ${text}`; // Add sparkle emoji!
       console.log("GENERATE_COMMENTARY: LLM commentary received:", text);
     } else {
-      llmCommentaryDisplay.textContent = "✨ A thrilling game, indeed!"; // Fallback message 
+      llmCommentaryDisplay.textContent = "✨ A thrilling game, indeed!"; // Fallback message
       console.warn(
         "GENERATE_COMMENTARY: LLM response structure unexpected or empty."
       );
@@ -425,7 +478,7 @@ function checkForWin() {
  * @returns {boolean} True if the game is a draw, false otherwise.
  */
 function checkForDraw() {
-  return !boardState.includes("");
+  return !boardState.includes("") && !checkForWin();
 }
 
 /**
@@ -438,7 +491,7 @@ function restartGame() {
   currentPlayer = "circle";
   if (infoDisplay) {
     infoDisplay.innerHTML = "Circle goes first";
-    infoDisplay.classList.remove("flash-text"); 
+    infoDisplay.classList.remove("flash-text");
     console.log("RESTART_GAME: Info display reset.");
   }
   if (newGameBtn) {
@@ -463,10 +516,9 @@ function restartGame() {
   }
   console.log("RESTART_GAME: LLM commentary cleared.");
 
-  document.querySelectorAll(".square").forEach((cell) => {
-    cell.innerHTML = "";
-  });
-  console.log("RESTART_GAME: Visual board cleared.");
+  // Re-create the board to ensure event listeners are attached
+  createBoard();
+  console.log("RESTART_GAME: Board re-created.");
 
   updateScoreDisplay();
   updateTurnMessage(`${capitalizePlayerName(currentPlayer)}'s turn!`); // Reset turn message
@@ -477,43 +529,308 @@ function restartGame() {
 document.addEventListener("DOMContentLoaded", () => {
   oWinEffect = document.getElementById("oWinEffect");
   console.log("DOM_LOADED: DOMContentLoaded event fired.");
-  // Assign DOM element references here, ensuring they exist
-  gameBoard = document.querySelector("#gameboard");
-  infoDisplay = document.getElementById("info");
-  playerOCircleScoreSpan = document.getElementById("playerOCircleScore");
-  playerXCrossScoreSpan = document.getElementById("playerXCrossScore");
-  tiesScoreSpan = document.getElementById("tiesScore");
-  newGameBtn = document.getElementById("newGameBtn");
-  xWinBurst = document.getElementById("xWinBurst");
-  llmCommentaryDisplay = document.getElementById("llmCommentaryDisplay"); // NEW: Assign LLM commentary display
-  llmLoadingIndicator = document.getElementById("llmLoadingIndicator"); // NEW: Assign LLM loading indicator
-  turnMessageDisplay = document.getElementById("turnMessage"); // NEW: Assign turn message display
-  console.log("DOM_LOADED: DOM elements assigned:", {
-    gameBoard,
-    infoDisplay,
-    playerOCircleScoreSpan,
-    playerXCrossScoreSpan,
-    tiesScoreSpan,
-    newGameBtn,
-    xWinBurst,
-    llmCommentaryDisplay,
-    llmLoadingIndicator,
-    turnMessageDisplay, // Log the new element
+  // NEW: Chat elements
+    chatMessagesDisplay = document.getElementById("chat-messages");
+    chatInput = document.getElementById("chat-input");
+    sendChatBtn = document.getElementById("send-chat-btn");
+
+    console.log("DOM_LOADED: Chat elements assigned:", {
+        // ... existing logs ...
+        chatMessagesDisplay, chatInput, sendChatBtn
+    });
+
+    // Event listener for sending messages
+    if (sendChatBtn) {
+        sendChatBtn.addEventListener("click", sendChatMessage);
+    }
+    if (chatInput) {
+        // Allow sending by pressing Enter key
+        chatInput.addEventListener("keypress", (e) => {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+    }
+    // ... rest of your DOMContentLoaded code ...
+    // Assign DOM element references here, ensuring they exist
+    gameBoard = document.querySelector("#gameboard");
+    infoDisplay = document.getElementById("info");
+    playerOCircleScoreSpan = document.getElementById("playerOCircleScore");
+    playerXCrossScoreSpan = document.getElementById("playerXCrossScore");
+    tiesScoreSpan = document.getElementById("tiesScore");
+    newGameBtn = document.getElementById("newGameBtn");
+    xWinBurst = document.getElementById("xWinBurst");
+    llmCommentaryDisplay = document.getElementById("llmCommentaryDisplay"); // NEW: Assign LLM commentary display
+    llmLoadingIndicator = document.getElementById("llmLoadingIndicator"); // NEW: Assign LLM loading indicator
+    turnMessageDisplay = document.getElementById("turnMessage"); // NEW: Assign turn message display
+    clearScoresBtn = document.getElementById("clearScoresBtn"); // Assign clearScoresBtn reference
+    // Assign additional DOM elements outside the object
+    joinGameSection = document.getElementById("joinGameSection");
+    createGameBtn = document.getElementById("createGameBtn");
+    joinGameInput = document.getElementById("joinGameInput");
+    joinGameBtn = document.getElementById("joinGameBtn");
+    roomInfoDisplay = document.getElementById("roomInfo");
+  
+    console.log("DOM_LOADED: DOM elements assigned:", {
+      gameBoard,
+      infoDisplay,
+      playerOCircleScoreSpan,
+      playerXCrossScoreSpan,
+      tiesScoreSpan,
+      newGameBtn,
+      xWinBurst,
+      llmCommentaryDisplay,
+      llmLoadingIndicator,
+      turnMessageDisplay,
+      clearScoresBtn,
+      joinGameSection,
+      createGameBtn,
+      joinGameInput,
+      joinGameBtn,
+      roomInfoDisplay
+    });
+  
+    // Event listeners
+    if (newGameBtn) {
+        newGameBtn.addEventListener("click", restartGame);
+    }
+    if (clearScoresBtn) {
+        clearScoresBtn.addEventListener("click", clearScores);
+    }
+  
+    // NEW: Join/Create Game Button Listeners
+    if (createGameBtn) {
+        createGameBtn.addEventListener("click", () => {
+            socket.emit('joinGame', null); // null indicates a new game
+            updateTurnMessage("Creating new game...");
+            if (joinGameSection) joinGameSection.style.display = 'none'; // Hide join section
+        });
+    }
+    if (joinGameBtn) {
+        joinGameBtn.addEventListener("click", () => {
+            const roomId = joinGameInput.value.trim();
+            if (roomId) {
+                socket.emit('joinGame', roomId);
+                updateTurnMessage(`Joining room ${roomId}...`);
+                if (joinGameSection) joinGameSection.style.display = 'none'; // Hide join section
+            } else {
+                updateTurnMessage("Please enter a Room ID.");
+            }
+        });
+    }
+  
+    console.log("DOM_LOADED: DOM elements assigned.");
+  
+    loadScores();
+    updateScoreDisplay();
+    createBoard(); // Initial board creation, but i
+    // (Removed duplicate calls to loadScores, updateScoreDisplay, and createBoard. These are now only called inside DOMContentLoaded.)
+});
+  // --- NEW: Listener for Game Updates from Server ---
+  socket.on("gameUpdate", async (data) => {
+    console.log("CLIENT: Received game update from server:", data);
+
+    const cellId = data.cellId;
+    const player = data.player;
+
+    // Apply the move to the local board if the cell is currently empty
+    // (This client-side check provides immediate feedback, but server is authoritative)
+    if (boardState[cellId] === "") {
+      boardState[cellId] = player; // Update local board state
+      const cellElement = gameBoard.querySelector(`[data-id="${cellId}"]`);
+      if (cellElement) {
+        const playerMark = document.createElement("div");
+        playerMark.classList.add(player);
+        playerMark.classList.add("fade-in-scale");
+        cellElement.append(playerMark);
+      }
+    }
+
+    // In a full multiplayer game, the server would send explicit
+    // messages for 'turn_changed', 'game_won', 'game_draw'.
+    // For now, we'll keep the logic here to make the game playable
+    // across tabs/devices, but be aware this is NOT authoritative.
+
+    // Switch player locally after receiving and applying a move from server
+    currentPlayer = player === "circle" ? "x" : "circle";
+    updateTurnMessage(`It's ${capitalizePlayerName(currentPlayer)}'s turn!`);
+
+    // Perform local win/draw checks, but remember the server will be the ultimate decider
+    if (checkForWin()) {
+      handleWin(); // This call will eventually come from the server
+      console.log(
+        "CLIENT: Local win detected, but awaiting server confirmation."
+      );
+    } else if (checkForDraw()) {
+      await handleDraw(); // This call will eventually come from the server
+      console.log(
+        "CLIENT: Local draw detected, but awaiting server confirmation."
+      );
+    }
   });
 
-  // Load scores from localStorage when the page first loads
-  loadScores();
+  // --- NEW/ Socket connection status messages (for debugging) ---
+  socket.on("connect", () => {
+    console.log("SOCKET: Connected to server with ID:", socket.id);
+    updateTurnMessage("Connected to game server!");
+  });
 
-  // Initial update to display scores after loading them
-  updateScoreDisplay();
-  // Call createBoard to set up the game board when the script loads
-  createBoard();
+  socket.on("disconnect", () => {
+    console.log("SOCKET: Disconnected from server");
+    updateTurnMessage("Disconnected from game server!");
+  });
 
-  // Add event listeners to the "New Game" button to restart the game
-  if (newGameBtn) {
-    newGameBtn.addEventListener("click", restartGame);
-    console.log("DOM_LOADED: New Game button event listener added.");
-  } else {
-    console.warn("DOM_LOADED: newGameBtn is null, event listener not added.");
-  }
+  socket.on("connect_error", (err) => {
+    console.error("SOCKET: Connection Error:", err);
+    updateTurnMessage("Connection error! Server down?");
+  });
+
+  // Fired when the client successfully connects to the Socket.IO server
+  socket.on('connect', () => {
+      console.log('SOCKET: Connected to server with ID:', socket.id);
+      updateTurnMessage("Connected to game server. Join or create a game!");
+      if (joinGameSection) joinGameSection.style.display = 'block'; // Ensure join section is visible on connect
+  });
+
+  // Fired when the client disconnects from the Socket.IO server
+  socket.on('disconnect', () => {
+      console.log('SOCKET: Disconnected from server');
+      updateTurnMessage("Disconnected from game server! Refresh to reconnect.");
+      if (joinGameSection) joinGameSection.style.display = 'block'; // Show join section again
+      if (gameBoard) { // Optionally disable board interactions if disconnected
+          gameBoard.style.pointerEvents = 'none';
+          gameBoard.style.opacity = 0.5;
+      }
+      if (roomInfoDisplay) roomInfoDisplay.textContent = ''; // Clear room info
+      myPlayerType = null; // Reset player type
+      currentRoomId = null; // Reset room ID
+  });
+
+  // Fired when there's a connection error (e.g., server not running)
+  socket.on('connect_error', (err) => {
+      console.error('SOCKET: Connection Error:', err);
+      updateTurnMessage("Connection error! Is the server running?");
+      if (joinGameSection) joinGameSection.style.display = 'block'; // Show join section on error
+  });
+
+  // NEW//Received when client successfully joins a room
+  socket.on('joinedRoom', (data) => {
+      myPlayerType = data.playerType;
+      currentRoomId = data.roomId;
+      roomInfoDisplay.textContent = `Room ID: ${currentRoomId} | You are Player ${capitalizePlayerName(myPlayerType)}`;
+      console.log(`CLIENT: Joined room ${data.roomId} as ${data.playerType}`);
+      updateTurnMessage(`Joined game as Player ${capitalizePlayerName(myPlayerType)}!`);
+      if (gameBoard) gameBoard.style.pointerEvents = 'auto'; // Enable board
+      if (newGameBtn) newGameBtn.style.display = 'none'; // Hide restart initially
+  });
+
+  // NEW// Received when a game starts (2 players joined)
+  socket.on('gameStart', (data) => {
+      renderBoard(data.board); // Initial board state from server
+      currentPlayer = data.currentPlayer;
+      gameEnded = false;
+      infoDisplay.innerHTML = ''; // Clear info display
+      infoDisplay.classList.remove("flash-text");
+      if (roomInfoDisplay) roomInfoDisplay.textContent = `Room ID: ${currentRoomId} | You are Player ${capitalizePlayerName(myPlayerType)}`;
+
+      if (myPlayerType === currentPlayer) {
+          updateTurnMessage("Your turn!");
+      } else {
+          updateTurnMessage(`Opponent's turn (${capitalizePlayerName(currentPlayer)})`);
+      }
+      console.log(`CLIENT: Game started. Current player: ${currentPlayer}`);
+  });
+
+  // NEW// Received whenever game state updates (after a move, or win/draw)
+  socket.on('gameStateUpdate', (data) => {
+      console.log('CLIENT: Received gameStateUpdate from server:', data);
+
+      // Update client's game state based on server's data
+      renderBoard(data.board);
+      currentPlayer = data.currentPlayer;
+      gameEnded = data.gameEnded;
+
+      // Reset visual effects
+      document.body.classList.remove("o-win-background");
+      if (oWinEffect) oWinEffect.classList.remove("active");
+      if (xWinBurst) xWinBurst.classList.remove("active");
+      if (infoDisplay) infoDisplay.classList.remove("flash-text");
+
+      if (data.gameEnded) {
+          handleGameEnd(data.message, data.winner); // Trigger game end visuals and score update
+      } else {
+          if (myPlayerType === currentPlayer) {
+              updateTurnMessage("Your turn!");
+          } else {
+              updateTurnMessage(`Opponent's turn (${capitalizePlayerName(currentPlayer)})`);
+          }
+      }
+  });
+
+  // NEW: Received when game is restarted by server
+  socket.on('gameRestarted', (data) => {
+      console.log('CLIENT: Game restarted by server.');
+      renderBoard(data.board);
+      currentPlayer = data.currentPlayer;
+      gameEnded = data.gameEnded;
+
+      // Reset client-side game state (scores are preserved by clearScoresBtn if used)
+      document.body.classList.remove("o-win-background");
+      if (oWinEffect) oWinEffect.classList.remove("active");
+      if (xWinBurst) xWinBurst.classList.remove("active");
+      if (infoDisplay) {
+          infoDisplay.innerHTML = ''; // Clear info display
+          infoDisplay.classList.remove("flash-text");
+      }
+      llmCommentaryDisplay.textContent = "";
+      llmLoadingIndicator.classList.add("hidden");
+      updateTurnMessage(`Game restarted! ${capitalizePlayerName(currentPlayer)} goes first!`);
+      if (newGameBtn) newGameBtn.style.display = 'none'; // Hide restart button until next end game
+  });
+
+// Handle opponent disconnection
+socket.on('opponentDisconnected', (message) => {
+    console.log('CLIENT: Opponent disconnected:', message);
+    gameEnded = true; // End the current game
+    updateLobbyMessage(message); // Display in lobby messages
+    updateTurnMessage("Opponent disconnected! Game ended.");
+    if (infoDisplay) infoDisplay.innerHTML = "Opponent disconnected!";
+    if (newGameBtn) newGameBtn.style.display = 'inline'; // Allow current player to restart or wait
+    if (gameBoard) {
+        gameBoard.style.pointerEvents = 'none'; // Disable board
+        gameBoard.style.opacity = 0.5;
+    }
 });
+
+// Handle server errors (e.g., room full, room not found)
+socket.on('gameError', (message) => {
+    console.error('CLIENT: Game Error:', message);
+    updateLobbyMessage(`Error: ${message}`);
+    updateTurnMessage(`Error: ${message}`);
+    if (joinGameSection) joinGameSection.style.display = 'block'; // Show join section on error
+    if (gameBoard) {
+        gameBoard.style.pointerEvents = 'none'; // Disable board
+        gameBoard.style.opacity = 0.5;
+    }
+})
+// ... existing socket.on listeners ...
+
+// NEW: Received when a chat message is sent
+socket.on('chatMessage', (data) => {
+    console.log('CLIENT: Received chat message:', data);
+    const senderName = capitalizePlayerName(data.senderType);
+    let prefix = '';
+    let messageClass = 'system-message'; // Default
+
+    if (data.senderId === socket.id) { // This is my own message
+        prefix = 'You';
+        messageClass = 'my-message';
+    } else if (data.senderType) { // This is an opponent's message
+        prefix = senderName;
+        messageClass = 'opponent-message';
+    }
+
+    appendChatMessage(`${prefix}: ${data.message}`, messageClass);
+});
+
+// ... rest of your socket.on listeners ...;
