@@ -403,16 +403,8 @@ up and then down.*/
     100% { color: #3498db; transform: scale(1); } /* Back to original */
 }
 
-/* Update for O-Win background color for better visibility */
-body.o-win-background {
-    background-color: #2ecc71; /* Keep this as is for O win */
-}
 
-/* Optional:  small adjustment to x-win-burst if neededv */
-.x-win-burst.active {
-    animation: burst-animation 1.2s forwards ease-out; /* Existing animation */
 /*apply sam styles as newGameBTn to clearscorev*/
-}
 #clearScoresBtn {
     padding: 12px 25px;
     font-size: 1.1em;

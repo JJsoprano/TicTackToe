@@ -1,15 +1,18 @@
 // server.js
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
+const socketIo = require('socket.io'); // Use 'socket.io' here for consistency
 const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server); // Initialize socket.io with the http server
 
 // Serve static files from the parent directory (your TICTACTOE folder)
-app.use(express.static(path.join(__dirname, '..')));
+// This path.join(__dirname, '..') is correct if server.js is in a subfolder like 'server/'
+// and your index.html, tictactoe.js, style.css are in the parent 'TICTACTOE/' folder.
+// If server.js is directly in the TICTACTOE folder, you should use: app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, '..'))); //
 
 // --- Server-side Game State Management ---
 const games = {}; // Stores active games, key: roomId, value: game object
@@ -18,7 +21,7 @@ const games = {}; // Stores active games, key: roomId, value: game object
 const winningConditions = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
     [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-    [0, 4, 8], [2, 4, 6]  // Diagonals
+    [0, 4, 8], [2, 4, 6]    // Diagonals
 ];
 
 // Helper to generate a unique room ID
@@ -39,12 +42,13 @@ function checkForDraw(board) {
     return !board.includes("");
 }
 
+// *** THIS IS THE ONLY io.on('connection') BLOCK YOU SHOULD HAVE ***
 io.on('connection', (socket) => {
     console.log(`A user connected: ${socket.id}`);
 
     let currentRoomId = null; // Store the room the socket is currently in
 
-    // --- NEW: Client wants to create or join a game ---
+    // --- Client wants to create or join a game ---
     socket.on('joinGame', (roomId) => {
         if (!roomId) { // Client wants to create a new game
             roomId = generateRoomId();
@@ -100,7 +104,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    // --- NEW: Client makes a move ---
+    // --- Client makes a move ---
     socket.on('makeMove', (data) => {
         if (!currentRoomId || !games[currentRoomId]) {
             socket.emit('gameError', 'Not in a valid game room.');
@@ -112,6 +116,10 @@ io.on('connection', (socket) => {
         const playerMakingMove = game.players[socket.id];
 
         // Server-side validation
+        if (typeof cellId !== 'number' || isNaN(cellId) || cellId < 0 || cellId > 8) {
+            socket.emit('gameError', 'Invalid cell ID.');
+            return;
+        }
         if (game.gameEnded) {
             socket.emit('gameError', 'Game has already ended.');
             return;
@@ -123,10 +131,6 @@ io.on('connection', (socket) => {
         if (game.board[cellId] !== "") {
             socket.emit('gameError', 'Cell is already occupied!');
             return;
-        }
-        if (cellId < 0 || cellId > 8) {
-             socket.emit('gameError', 'Invalid cell ID.');
-             return;
         }
 
 
@@ -168,7 +172,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    // --- NEW: Client wants to restart the game ---
+    // --- Client wants to restart the game ---
     socket.on('restartGameRequest', () => {
         if (!currentRoomId || !games[currentRoomId]) {
             socket.emit('gameError', 'Not in a valid game room.');
@@ -188,12 +192,9 @@ io.on('connection', (socket) => {
         });
         console.log(`Server: Game in room ${currentRoomId} restarted.`);
     });
-    // server.js
-
-io.on('connection', (socket) => {
-    // ... existing socket.on listeners (like 'joinGame', 'makeMove', 'restartGameRequest', 'disconnect') ...
-
+    
     // --- NEW: Handle Chat Messages ---
+    // This handler must be inside the single io.on('connection', ...) block
     socket.on('chatMessage', (data) => {
         const { roomId, message, senderType } = data;
         
@@ -212,7 +213,6 @@ io.on('connection', (socket) => {
             senderId: socket.id // Send sender's socket ID so client can identify its own messages
         });
     });
-});
 
     // --- Handle Disconnections ---
     socket.on('disconnect', () => {
@@ -232,7 +232,7 @@ io.on('connection', (socket) => {
             }
         }
     });
-});
+}); // *** THIS IS THE CORRECT AND ONLY CLOSING FOR io.on('connection') ***
 
 // Helper function to capitalize player names
 function capitalizePlayerName(player) {
@@ -240,6 +240,6 @@ function capitalizePlayerName(player) {
 }
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+server.listen(PORT, () => { // Listen on the http server, not just the express app
     console.log(`Server listening on http://localhost:${PORT}`);
 });
