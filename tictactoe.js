@@ -199,6 +199,17 @@ function animateSpark(spark, vx, vy) {
     const gravity = 0.05;
     const fadeSpeed = 1;
 
+    /**
+     * Updates the position and opacity of a firework spark.
+     *
+     * @description
+     *     This function is called repeatedly by requestAnimationFrame to
+     *     update the position and opacity of a firework spark. The spark's
+     *     position is updated based on its horizontal and vertical velocities,
+     *     and its opacity is decreased over time to simulate a fading effect.
+     *     The function is responsible for scheduling the next update by
+     *     calling requestAnimationFrame again.
+     */
     function update() {
         if (life <= 0) {
             spark.remove();
@@ -288,6 +299,8 @@ function handleCellClick(cell) {
 }
 
 
+
+
 /**
  * Updates the scores based on the game outcome and updates the display.
  *
@@ -297,7 +310,6 @@ function handleCellClick(cell) {
  *
  * @param {string} winner - The winner of the game ('circle', 'x', or 'draw').
  */
-
 function updateScores(winner) {
     if (winner === 'circle') {
         playerOScore++;
