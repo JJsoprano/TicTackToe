@@ -21,7 +21,7 @@ let gameEnded = false;
 let playerOScore = 0;
 let playerXScore = 0;
 let tiesScore = 0;
-
+let body; // Add this line
 // Winning combinations
 const winningConditions = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
@@ -34,12 +34,22 @@ function capitalizePlayerName(player) {
     return player.charAt(0).toUpperCase() + player.slice(1);
 }
 
+/**
+ * Updates the text content of the element with the ID "info" with the given message.
+ * If no such element exists, does nothing.
+ * @param {string} message The text to display in the game status area.
+ */
 function updateGameStatus(message) {
     if (infoDisplay) {
         infoDisplay.textContent = message;
     }
 }
 
+/**
+ * Updates the "Whose turn is it?" message on the game board.
+ * If the game is over, shows "Game Over!" instead.
+ * @param {string} player The current player's name ('circle' or 'x').
+ */
 function updateTurnMessage(player) {
     if (turnMessageDisplay) {
         if (gameEnded) {
@@ -67,6 +77,12 @@ function createBoardCells() {
     console.log("Board cells created.");
 }
 
+/**
+ * Renders the current state of the Tic Tac Toe game board in the DOM.
+ *
+ * @param {Array<string>} boardState The current state of the game board, where each element represents a cell.
+ *     The elements can have one of the following values: 'circle' (O), 'x' (X), or an empty string (empty cell).
+ */
 function renderBoard(boardState) {
     currentBoard = boardState; // Update client-side board state
     const cells = gameboard.children;
@@ -93,10 +109,121 @@ function checkForWin(board, player) {
     });
 }
 
+/**
+ * Checks if the game board is in a draw state.
+ *
+ * @param {Array<string>} board The current state of the game board, where each element represents a cell.
+ * @returns {boolean} True if there are no empty cells, indicating a draw; otherwise, false.
+ */
+
+/**
+ * Checks if the game board is in a draw state.
+ *
+ * @param {Array<string>} board The current state of the game board, where each element represents a cell.
+ * @returns {boolean} True if there are no empty cells, indicating a draw; otherwise, false.
+ */
 function checkForDraw(board) {
     return !board.includes("");
 }
+/**
+ * Creates a fireworks explosion on the page for a short duration.
+ * Does not clear up after itself, caller is responsible for removing the container.
+ * @param {HTMLElement} container - The element to append the sparks to
+ * @param {Array<string>} colors - An array of colors to randomly select from
+ */
+function triggerFireworks() {
+    const fireworksContainer = document.createElement('div');
+    fireworksContainer.classList.add('fireworks-container');
+    document.body.appendChild(fireworksContainer);
 
+    const colors = ['#ff0', '#f00', '#0f0', '#00f', '#f0f'];
+    const numberOfExplosions = 10;
+
+    for (let i = 0; i < numberOfExplosions; i++) {
+        createFirework(fireworksContainer, colors);
+    }
+
+    setTimeout(() => {
+        document.body.removeChild(fireworksContainer);
+    }, 2000);
+}
+
+/**
+ * Creates a firework explosion on the page
+ * @param {HTMLElement} container - The element to append the sparks to
+ * @param {Array<string>} colors - An array of colors to randomly select from
+ */
+function createFirework(container, colors) {
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+    const numberOfSparks = 30;
+    const color = colors[[Math.floor(Math.random() * colors.length)]];
+
+    for (let i = 0; i < numberOfSparks; i++) {
+        const spark = document.createElement('div');
+        spark.classList.add('firework-spark');
+        spark.style.backgroundColor = color;
+
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 5 + 2;
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed;
+
+        spark.style.left = `${x}px`;
+        spark.style.top = `${y}px`;
+
+        container.appendChild(spark);
+
+        animateSpark(spark, vx, vy);
+    }
+}
+
+/**
+ * Animates a single firework spark.
+ *
+ * @param {HTMLElement} spark The HTML element to animate.
+ * @param {number} vx The horizontal velocity of the spark.
+ * @param {number} vy The vertical velocity of the spark.
+ *
+ * @description
+ *     This function animates a single firework spark by updating its
+ *     position, opacity, and velocity over time. The spark's position is
+ *     updated based on its horizontal and vertical velocities, and its
+ *     opacity is decreased over time to simulate a fading effect. The
+ *     function uses requestAnimationFrame to schedule the next update,
+ *     which allows the animation to be paused if the user switches to
+ *     another tab.
+ */
+function animateSpark(spark, vx, vy) {
+    let life = 100;
+    const gravity = 0.05;
+    const fadeSpeed = 1;
+
+    function update() {
+        if (life <= 0) {
+            spark.remove();
+            return;
+        }
+
+        const x = parseFloat(spark.style.left);
+        const y = parseFloat(spark.style.top);
+        let opacity = life / 100;
+
+        spark.style.left = `${x + vx}px`;
+        spark.style.top = `${y + vy}px`;
+        spark.style.opacity = opacity;
+        vy += gravity;
+        life -= fadeSpeed;
+
+        requestAnimationFrame(update);
+    }
+    update();
+}
+/**
+ * Handles a player's click on a cell in the game board.
+ *
+ * @param {HTMLElement} cell The cell element that was clicked.
+ */
 function handleCellClick(cell) {
     const cellId = parseInt(cell.id);
 
@@ -116,12 +243,32 @@ function handleCellClick(cell) {
         updateScores(currentPlayer);
         updateGameStatus(`${capitalizePlayerName(currentPlayer)} won!`);
         updateTurnMessage(currentPlayer); // Game Over!
+
         if (currentPlayer === 'x') {
-            xWinBurst.style.display = 'block';
-            setTimeout(() => xWinBurst.style.display = 'none', 1500);
+            // X wins: Turn screen red AND trigger fireworks
+            if (body) {
+                body.classList.add('body-x-wins');
+                setTimeout(() => {
+                    body.classList.remove('body-x-wins');
+                }, 3000); // Remove red class after 3 seconds
+            }
+            triggerFireworks(); // Trigger fireworks for X
+            // Removed existing xWinBurst, as fireworks are now the main effect
+            // xWinBurst.style.display = 'block';
+            // setTimeout(() => xWinBurst.style.display = 'none', 1500);
+
         } else if (currentPlayer === 'circle') {
-            oWinEffect.style.display = 'block';
-            setTimeout(() => oWinEffect.style.display = 'none', 1500);
+            // O wins: Turn screen green AND trigger fireworks
+            if (body) {
+                body.classList.add('body-o-wins');
+                setTimeout(() => {
+                    body.classList.remove('body-o-wins');
+                }, 3000); // Remove green class after 3 seconds
+            }
+            triggerFireworks(); // Trigger fireworks for O
+            // Removed existing oWinEffect, as fireworks are now the main effect
+            // oWinEffect.style.display = 'block';
+            // setTimeout(() => oWinEffect.style.display = 'none', 1500);
         }
         fetchLLMCommentary(`${capitalizePlayerName(currentPlayer)} won!`);
 
@@ -140,6 +287,17 @@ function handleCellClick(cell) {
     }
 }
 
+
+/**
+ * Updates the scores based on the game outcome and updates the display.
+ *
+ * Increments the score for the winning player or ties if applicable.
+ * Updates the score display elements for player O, player X, and ties.
+ * Saves the updated scores to local storage.
+ *
+ * @param {string} winner - The winner of the game ('circle', 'x', or 'draw').
+ */
+
 function updateScores(winner) {
     if (winner === 'circle') {
         playerOScore++;
@@ -154,6 +312,21 @@ function updateScores(winner) {
     saveScores(); // Save scores to local storage
 }
 
+/**
+ * Loads the saved game scores from local storage and updates the score display elements.
+ *
+ * Retrieves the scores for player O, player X, and ties from local storage,
+ * parses them, and updates the corresponding score display elements on the page.
+ * If there is an error parsing the stored scores, the function logs an error to the console.
+ */
+
+/**
+ * Loads the saved game scores from local storage and updates the score display elements.
+ *
+ * Retrieves the scores for player O, player X, and ties from local storage,
+ * parses them, and updates the corresponding score display elements on the page.
+ * If there is an error parsing the stored scores, the function logs an error to the console.
+ */
 function loadScores() {
     const storedScores = localStorage.getItem('ticTacToeScores');
     if (storedScores) {
@@ -171,6 +344,13 @@ function loadScores() {
     }
 }
 
+/**
+ * Saves the current game scores to local storage.
+ *
+ * Creates a JSON object containing the scores for player O, player X, and ties,
+ * and saves it to local storage under the key 'ticTacToeScores'.
+ * If there is an error saving the scores, the function logs an error to the console.
+ */
 function saveScores() {
     const scores = {
         playerOScore,
@@ -180,6 +360,13 @@ function saveScores() {
     localStorage.setItem('ticTacToeScores', JSON.stringify(scores));
 }
 
+/**
+ * Resets the game scores to zero and clears the score display elements.
+ *
+ * Clears the scores for player O, player X, and ties from local storage.
+ * Resets the score display elements on the page to zero.
+ * Logs a success message to the console.
+ */
 function clearScores() {
     playerOScore = 0;
     playerXScore = 0;
@@ -252,9 +439,9 @@ async function fetchLLMCommentary(outcomeDescription) {
     }
 }
 
-
 // --- DOM Ready Event ---
 document.addEventListener("DOMContentLoaded", () => {
+    body = document.body; // Add this line
     // Assign DOM elements
     gameboard = document.getElementById("gameboard");
     turnMessageDisplay = document.getElementById("turnMessage");

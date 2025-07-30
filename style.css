@@ -170,6 +170,46 @@ button:active {
     display: none;
 }
 
+
+.body-o-wins {
+    background-color: #ccffcc !important; /* Light green */
+    transition: background-color 1s ease-in-out; /* Smooth transition */
+}
+/* style.css */
+
+/* ... (your existing CSS) ... */
+
+.body-o-wins {
+    background-color: #13b513 !important; /* Light green for Circle wins */
+    transition: background-color 1s ease-in-out;
+}
+
+.body-x-wins { /* NEW: Class for Cross wins */
+    background-color: #b90a0a !important; /* Light red */
+    transition: background-color 1s ease-in-out;
+}
+
+/* Firework Container and Spark styles are already there, keep them as is: */
+.fireworks-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.firework-spark {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: #ff0; /* Default, will be overridden by JS */
+    opacity: 1;
+    pointer-events: none;
+}
+
 #xWinBurst,
 #oWinEffect {
     position: absolute;
@@ -212,4 +252,27 @@ button:active {
         padding: 10px 20px;
         font-size: 1em;
     }
+}
+/* style.css */
+
+/* ... (your existing CSS) ... */
+
+.fireworks-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allows clicking through the container */
+    z-index: 1000; /* Ensure it's on top */
+}
+
+.firework-spark {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: #ff0;
+    opacity: 1;
+    pointer-events: none;
 }
