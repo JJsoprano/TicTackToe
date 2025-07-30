@@ -1,610 +1,215 @@
-/* Basic reset and body styling  */
+/* style.css */
+
 body {
-    font-family: 'Inter', Arial, sans-serif; /* Using Inter font for a modern look */
-    margin: 0;
-    padding: 20px; /* Add some padding for smaller screens */
-    box-sizing: border-box; /* Include padding in element's total width and height */
+    font-family: 'Inter', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Full viewport height */
-    flex-direction: column; /* Your preferred column layout */
-    background-color: #e0e0e0; /* Light grey background from suggestions */
-}
-body.o-win-background{
-    background-color: #2ecc71;
-}
-
-/* Container for the entire game  */
-.game-container {
-    background-color: #ffffff; /* White background for the container */
-    padding: 30px;
-    border-radius: 15px; /* Rounded corners for the container */
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Soft shadow */
-    text-align: center;
-    max-width: 650px; /* Adjusted max-width to accommodate 600px board + padding */
-    width: 100%; /* Full width on smaller screens */
+    min-height: 100vh;
+    background-color: #f0f2f5; /* Light grey background */
+    margin: 0;
+    padding: 20px;
     box-sizing: border-box;
-    display: flex; /* Using flexbox for internal layout */
-    flex-direction: column; /* Stack elements vertically */
-    align-items: center; /* Center items horizontally */
 }
 
-/* Game title styling  */
+.game-container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 450px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 h1 {
-    color: #2c3e50; /* Darker blue-grey color */
+    color: #333;
     margin-bottom: 25px;
-    font-size: 2.2em;
+    font-size: 2.8em;
+    letter-spacing: -1px;
 }
 
-/* Scores section styling */
 .scores {
     display: flex;
-    justify-content: space-around; /* Distribute items evenly */
-    margin-bottom: 25px;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    color: #555;
     padding: 10px 0;
-    border-radius: 8px;
-    background-color: #f8f8f8; /* Slightly different background for scores */
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
-    width: 90%; /* Make scores section responsive within container */
-    max-width: 580px; /* Fit well above the board */
+    border-bottom: 1px solid #eee;
 }
 
 .scores p {
     margin: 0;
-    color: #34495e; /* Medium blue-grey */
-    font-size: 1.1em;
     font-weight: bold;
 }
 
-.scores span {
-    color: #e67e22; 
-    margin-left: 5px;
-}
-
-/* Game status message*/
-.game-status {
-    margin-bottom: 25px;
-    font-size: 1.3em;
-    color: #3498db; /* Blue for messages */
-    min-height: 1.5em; 
+#turnMessage,
+#info {
+    font-size: 1.2em;
+    margin-top: 15px;
+    margin-bottom: 20px;
     font-weight: bold;
+    color: #007bff;
 }
 
-/* Main game board grid */
 #gameboard {
-    width: 600px; 
-    height: 600px; 
-    background-color: black; /* background */
-    
-    display: grid; 
-    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
-    grid-template-rows: repeat(3, 1fr);    /* 3 equal rows */
-    gap: 8px; /* Gap between grid items */
-
-    border: solid 1px black; /* This border is around the  board */
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
-    overflow: hidden;
+    display: grid;
+    grid-template-columns: repeat(3, 110px);
+    grid-template-rows: repeat(3, 110px);
+    width: 330px;
+    height: 330px;
+    border: 4px solid #333;
     margin: 25px auto;
-    max-width: 90%;
-    aspect-ratio: 1 / 1;
+    background-color: #f8f8f8;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    border-radius: 5px;
+    overflow: hidden;
 }
 
-
-.square { 
-    background-color: white; 
-    border: solid 6px #cccccc; 
-    box-sizing: border-box; 
+.cell {
+    width: 110px;
+    height: 110px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 4em; 
+    font-size: 4.5em;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth hover effect */
-    border-radius: 8px; 
-}
-
-.square:hover { /* Added hover */
-    background-color: #dcdde1; /* Slightly darker on hover */
-    transform: scale(1.02); /* Slight scale effect on hover */
-}
-
-/* Player specific styling for Circle  */
-.circle {
-    height: 95%; 
-    width: 95%;
-    border-radius: 50%;
-    border: 25px solid rgb(36, 211, 80); 
+    border: 1px solid #ddd;
     box-sizing: border-box;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    color: #212529;
 }
 
-.x {
-    height: 95%; 
-    width: 95%; 
-    position: relative;
+.cell:hover {
+    background-color: #e9ecef;
+    transform: scale(1.02);
 }
 
-.x:before, .x:after {
-    content: "";
-    position: absolute;
-    background-color: rgb(219, 32, 64); /* Your specific color */
-    height: 25px; /* Thickness of the X bars */
-    width: 100%; /* Make bars span the full width of the parent .x */
-    top: 50%; /* Center vertically */
-    left: 0; /* Align to the left */
-    transform: translateY(-50%); /* Adjust for height to truly center */
+.cell.O {
+    color: #28a745;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
-.x:before {
-    /* Rotate this bar for one diagonal of the X */
-    transform: translateY(-50%) rotate(45deg); 
+.cell.X {
+    color: #dc3545;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
-.x:after {
-    /*  Rotate this bar for the other diagonal of the X */
-    transform: translateY(-50%) rotate(-45deg);
+.cell:active {
+    transform: scale(0.98);
 }
 
-/* Styling for the New Game button  */
-#newGameBtn {
-    padding: 12px 25px;
-    font-size: 1.1em;
-    background-color: #3498db; /* Blue button changed from light blue*/
-    color: white;
-    border: none;
-    border-radius: 8px; /* Rounded button corners upgraded to pretty  */
-    cursor: pointer;
-    margin-top: 30px;
-    transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Button shadow */
-    font-weight: bold;
-    letter-spacing: 0.5px;
-}
-
-#newGameBtn:hover {
-    background-color: #2980b9; 
-    transform: translateY(-2px); 
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
-}
-
-#newGameBtn:active {
-    transform: translateY(0); /* Press effect */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduced shadow on active */
-}
-.x-win-burst{
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%) scale(0);
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: radial-gradient(circle at center, rgba(255, 223, 0, 0.8) 0%, rgba(255, 140, 0, 0.6) 50%, rgba(255, 0, 0, 0) 100%);
-    box-shadow: 0 0 50px 20px rgba(255, 140, 0, 0.7); /* Initial glow effect */
-    opacity: 0;
-    pointer-events: none;
-    z-index: 999;
-
-}
-/* Animation for the burst */
-.x-win-burst.active {
-    animation: burst-animation 1.2s forwards ease-out; /* Apply animation when 'active' class is present */
-}
-/*made it pretty*/
-@keyframes burst-animation {
-    0% {
-        transform: translate(-50%,-50%) scale(0); /* Start very small */
-        opacity: 0;
-        box-shadow: 0 0 0 0 rgba(255, 140, 0, 0.7); /* No initial glow */
-    }
-    10% {
-        opacity: 1; /* Quickly become fully opaque */
-    }
-    50% {
-        transform: translate(-50%, -50%) scale(1.5); 
-        opacity: 0.8;
-        box-shadow: 0 0 80px 40px rgba(255, 140, 0, 0.8);
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(2.5); 
-        opacity: 0;
-        box-shadow: 0 0 120px 50px rgba(255, 140, 0, 0); 
-    }
-}
-.llm-commentary-section{
-    margin-top: 25px;
-    padding: 15px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-    width: 90%;
-    max-width: 580px;
-    min-height: 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.llm-commentary-text{
-    font-size: 1.1em;
-    color: #555;
-    font-style: italic;
-    margin: 0;
-}
-.llm-loading-indicator{
-    font-size: 0.9em;
-    color: #888;
-    margin: 5px 0 0;
-    animation: pulse 1.5s infinite alternate;
-}
-.hidden{
-    display: none;
-}
-
-/* Base style for the O-win effect */
-.o-win-effect {
-    position: absolute; /* Allows precise positioning relative to its parent (game-container or body) */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Centers the element */
-    width: 200px;
-    height: 200px; 
-    border-radius: 50%; 
-    background-color: rgba(66, 133, 244, 0.3); 
-    box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); 
-    opacity: 0; 
-    pointer-events: none; 
-    z-index: 9; 
-}
-
-/* Style for when the O-win effect is active!! */
-.o-win-effect.active {
-    animation: oPulseGlow 1.5s ease-out forwards; /* Apply the pulsing animation */
-}
-
-/* Keyframes for the O-win pulsing glow animation! */
-@keyframes oPulseGlow {
-    0% {
-        transform: translate(-50%, -50%) scale(0.5); 
-        opacity: 0;  /*Not Visable*/
-        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); 
-    }
-    50% {
-        transform: translate(-50%, -50%) scale(1.2); /* Grow larger */
-        opacity: 1; /* Fully visible */
-        box-shadow: 0 0 40px 20px rgba(66, 133, 244, 0.8), /* Inner */
-                    0 0 80px 40px rgba(66, 133, 244, 0.5); /* Outer */
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(1); /* Settle at final size */
-        opacity: 0; /* Fade out */
-        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); /* Glow fades out */
-    }
-}
-@keyframes pulse{
-    0%{opacity:0.6;}
-    100%{opacity: 1;}
-}
-
-/* Responsive adjustments for smaller screens - Adapted for your layout */
-@media (max-width: 680px) { /* Adjusted breakpoint to fit the larger board */
-    body{
-        padding: 10px;
-    }
-    .game-container {
-        padding: 15px;
-        border-radius: 10px;
-    }
-
-    h1 {
-        font-size: 1.8em;
-        margin-bottom: 20px;
-    }
-
-    .scores p {
-        font-size: 1em;
-    }
-
-    .game-status {
-        font-size: 1.1em;
-        margin-bottom: 20px;
-    }
-    #gameboard {
-        width: 100%; /* Make board full width on smaller screens */
-        height: auto; /* Allow height to adjust */
-        margin: 20px auto;
-        border-radius: 8px; /* Slightly smaller border-radius */
-    }
-
-    .square {
-        font-size: 15vw; /* Adjust font size relative to viewport width */
-        border: solid 4px #cccccc; /* Slightly thinner light grey border */
-    }
-
-    .circle {
-        height: 95%; /* Adjust circle size to fit responsive square */
-        width: 95%;
-        border-width: 15px;
-    }
-
-    .x {
-        height: 95%; 
-        width: 95%;
-    }
-
-    .x:before, .x:after {
-        background-color: rgb(219, 32, 64); /* Ensure color remains */
-        height: 20px; /*  thickness for smaller screens */
-    }
-    #newGameBtn {
-        padding: 10px 20px;
-        font-size: 1em;
-        margin-top: 20px;
-    }
-
-    .x-win-burst {
-        width: 150px; /* Smaller burst on small screens */
-        height: 150px;
-    }
-/*a responsive adjustment found within a media query screen */
-    .llm-commentary-section {
-        padding: 10px;
-        font-size: 0.9em;
-    }
-} /* <-- Move this closing brace here to properly end the media query */
-
-/*  NEW: Turn Message Display  */
-.turn-message {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #4a69bd; /* pleasant blue for turn messages */
-    margin-bottom: 15px;
-    min-height: 1.5em; /* prevent layout shift */
-    text-align: center;
-    opacity: 0; /* invisible for animation */
-    transition: opacity 0.3s ease-in-out; /* Smooth transition */
-}
-
-/* Animation for the turn message */
-.turn-message.fade-in-out {
-    animation: fadeInOutMessage 3s forwards; /* Fade in, stay, then fade out */
-}
-/*defines a CSS animation that makes an element fade in, 
-stay visible for a period,and then fade out, while also moving slightly
-up and then down.*/
-@keyframes fadeInOutMessage {
-    0% { opacity: 0; transform: translateY(-10px); }
-    10% { opacity: 1; transform: translateY(0); }
-    90% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(10px); }
-}
-
-/* nEW: Cell Mark (X/O) Animation  */
-.fade-in-scale {
-    animation: fadeInScale 0.3s ease-out forwards;
-}
-
-@keyframes fadeInScale {
-    0% { transform: scale(0.5); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-/* Info Display Flash Animation for Win/Draw --- */
-.flash-text {
-    animation: flashText 1.5s infinite alternate; /* Flash continuously when active */
-}
-
-@keyframes flashText {
-    0% { color: #3498db; transform: scale(1); } /* Original blue */
-    50% { color: #e74c3c; transform: scale(1.05); } /* Red for emphasis */
-    100% { color: #3498db; transform: scale(1); } /* Back to original */
-}
-
-
-/*apply sam styles as newGameBTn to clearscorev*/
-#clearScoresBtn {
-    padding: 12px 25px;
-    font-size: 1.1em;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 30px;
-    margin-left: 10px; 
-    transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    font-weight: bold;
-    letter-spacing: 0.5px;
-}
-/* style.css */
-
-#chat-container {
-    width: 300px; /* Adjust width as needed */
-    height: 350px; /* Adjust height as needed */
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    margin: 20px auto; /* Center it horizontally with some top margin */
-    font-family: 'Arial', sans-serif; /* Consistent font */
-}
-
-#chat-container h2 {
-    font-size: 1.2em;
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #333;
-    text-align: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
-}
-
-#chat-messages {
-    flex-grow: 1; /* Allows it to take up available vertical space */
-    overflow-y: auto; /* Adds scrollbar if content overflows */
-    border: 1px solid #eee;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #fff;
-    border-radius: 5px;
-    display: flex; /* Use flexbox for messages */
-    flex-direction: column; /* Stack messages vertically */
-}
-
-.chat-message {
-    margin-bottom: 5px;
-    padding: 5px 8px;
-    border-radius: 5px;
-    word-wrap: break-word; /* Ensures long words wrap */
-    max-width: 80%; /* Don't let messages take full width */
-}
-
-.chat-message.my-message {
-    background-color: #dcf8c6; /* Light green for sender's messages */
-    align-self: flex-end; /* Pushes your messages to the right */
-}
-
-.chat-message.opponent-message {
-    background-color: #e0e0e0; /* Light gray for opponent's messages */
-    align-self: flex-start; /* Pushes opponent's messages to the left */
-}
-
-.chat-message.system-message {
-    font-style: italic;
-    color: #777;
-    text-align: center;
-    align-self: center; /* Centers system messages */
-    max-width: 100%; /* System messages can take full width */
-}
-
-#chat-input {
-    width: calc(100% - 18px); /* Account for padding and border */
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    font-size: 1em;
-}
-
-#send-chat-btn {
-    padding: 8px 15px;
+button {
     background-color: #007bff;
     color: white;
+    padding: 12px 25px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.2s ease;
+    font-size: 1.1em;
+    margin: 8px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
 }
 
-#send-chat-btn:hover {
+button:hover {
     background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+button:active {
+    background-color: #004085;
+    transform: translateY(0);
+}
+
+#clearScoresBtn {
+    background-color: #6c757d;
+    box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2);
 }
 
 #clearScoresBtn:hover {
-    background-color: #c0392b; /* Darker red on hover */
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    background-color: #5a6268;
 }
 
 #clearScoresBtn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    background-color: #495057;
 }
 
-/* If you want the buttons to stack nicely on small screens: */
-@media (max-width: 680px) {
-    #newGameBtn, #clearScoresBtn {
-        display: block; 
-        width: 90%; 
-        margin-left: auto; 
-        margin-right: auto;
-        margin-bottom: 10px; 
-    }
-    /* style.css */
-
-/* ... (Your existing CSS) ... */
-
-/* NEW: Styles for Join/Create Game Section */
-.join-game-section {
-    background-color: #f0f0f0;
+.llm-commentary-section {
+    margin-top: 30px;
     padding: 20px;
+    background-color: #f8f9fa;
     border-radius: 10px;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
-    margin-bottom: 25px;
-    width: 90%;
-    max-width: 580px;
+    border: 1px solid #e2e6ea;
+    min-height: 80px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 15px; /* Space between elements */
-}
-
-.join-game-section h2 {
-    color: #2c3e50;
-    margin-bottom: 10px;
-    font-size: 1.8em;
-}
-
-.join-game-section button {
-    padding: 10px 20px;
-    font-size: 1em;
-    background-color: #27ae60; /* Green for create */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.join-game-section button:hover {
-    background-color: #229954;
-}
-
-.join-existing {
-    display: flex;
-    gap: 10px;
-    width: 100%;
     justify-content: center;
     align-items: center;
+    font-style: italic;
+    color: #6c757d;
 }
 
-.join-existing input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    flex-grow: 1; /* Allows input to take available space */
-    max-width: 250px;
-}
-
-.join-existing button {
-    background-color: #3498db; /* Blue for join */
-}
-
-.join-existing button:hover {
-    background-color: #2980b9;
-}
-
-.room-info-display {
+#llmCommentaryDisplay {
     font-size: 1.1em;
-    font-weight: bold;
-    color: #34495e;
+    line-height: 1.5;
+    text-align: center;
+    margin: 0;
+}
+
+.llm-loading-indicator {
     margin-top: 10px;
+    font-size: 0.9em;
+    color: #007bff;
 }
 
-/* Hide game board and buttons initially until connected to a game */
-#gameboard {
-    /* Existing styles */
-    pointer-events: none; /* Disable clicks until game starts */
-    opacity: 0.5; /* Visually indicate it's not active */
+.hidden {
+    display: none;
 }
-/* When a game starts, you'd set pointer-events: auto; and opacity: 1; via JS if needed */
 
+#xWinBurst,
+#oWinEffect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: none;
+    z-index: 100;
+}
+
+#xWinBurst {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="65" font-family="Arial" font-size="80" fill="%23dc3545" text-anchor="middle" dominant-baseline="central">💥</text></svg>');
+}
+
+#oWinEffect {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="65" font-family="Arial" font-size="80" fill="%2328a745" text-anchor="middle" dominant-baseline="central">✨</text></svg>');
+}
+
+@media (max-width: 400px) {
+    #gameboard {
+        grid-template-columns: repeat(3, 90px);
+        grid-template-rows: repeat(3, 90px);
+        width: 270px;
+        height: 270px;
+    }
+    .cell {
+        width: 90px;
+        height: 90px;
+        font-size: 3.5em;
+    }
+    h1 {
+        font-size: 2em;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
 }

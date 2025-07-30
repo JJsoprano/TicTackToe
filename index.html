@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multiplayer Tic Tac Toe</title>
+    <title>Single-Player Tic Tac Toe</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -11,15 +11,6 @@
     <div class="game-container">
         <h1>Tic Tac Toe</h1>
 
-        <div id="joinGameSection" class="join-game-section">
-            <h2>Join or Create Game</h2>
-            <button id="createGameBtn">Create New Game</button>
-            <div class="join-existing">
-                <input type="text" id="joinGameInput" placeholder="Enter Room ID">
-                <button id="joinGameBtn">Join Game</button>
-            </div>
-            <p id="roomInfo" class="room-info-display"></p>
-        </div>
         <div class="scores">
             <p>Circle (O) Wins: <span id="playerOCircleScore">0</span></p>
             <p>Cross (X) Wins: <span id="playerXCrossScore">0</span></p>
@@ -28,18 +19,11 @@
 
         <p id="turnMessage" class="turn-message"></p>
         <p id="info" class="game-status"></p>
-        <div id="chat-container">
-    <h2>Game Chat</h2>
-    <div id="chat-messages">
-        </div>
-    <input type="text" id="chat-input" placeholder="Type your message...">
-    <button id="send-chat-btn">Send</button>
-</div>
 
         <div id="gameboard">
-            </div>
+        </div>
 
-        <button id="newGameBtn">Restart Game</button>
+        <button id="newGameBtn">Start New Game</button>
         <button id="clearScoresBtn">Clear Scores</button>
 
         <div class="llm-commentary-section">
@@ -52,7 +36,6 @@
 
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
     <script src="tictactoe.js"></script>
 </body>
 </html>
