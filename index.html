@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Single-Player Tic Tac Toe</title>
+    <title>Tic Tac Toe Game</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-</head>
+    </head>
 <body>
     <div class="game-container">
         <h1>Tic Tac Toe</h1>
+
+        <div class="mode-selection">
+            <button id="singlePlayerBtn">Single Player (vs. AI)</button>
+            <button id="twoPlayerBtn">Two Player (Human vs. Human)</button>
+        </div>
 
         <div class="scores">
             <p>Circle (O) Wins: <span id="playerOCircleScore">0</span></p>
@@ -21,7 +26,7 @@
         <p id="info" class="game-status"></p>
 
         <div id="gameboard">
-        </div>
+            </div>
 
         <button id="newGameBtn">Start New Game</button>
         <button id="clearScoresBtn">Clear Scores</button>

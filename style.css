@@ -10,6 +10,7 @@ body {
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
+    overflow: hidden; /* Prevent scrollbars due to fireworks */
 }
 
 .game-container {
@@ -29,6 +30,37 @@ h1 {
     font-size: 2.8em;
     letter-spacing: -1px;
 }
+
+.mode-selection {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.mode-selection button {
+    background-color: #4CAF50;
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.2);
+}
+
+.mode-selection button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+.mode-selection button:active {
+    background-color: #3e8e41;
+    transform: translateY(0);
+}
+
 
 .scores {
     display: flex;
@@ -167,41 +199,20 @@ button:active {
 }
 
 .hidden {
-    display: none;
+    display: none !important; /* Use !important for hidden to ensure it overrides other display properties */
 }
-
 
 .body-o-wins {
-    background-color: #13b513 !important; /* Light green for Circle wins */
+    background-color: #0a6f0a !important; /* Light green for Circle wins */
     transition: background-color 1s ease-in-out;
 }
 
-.body-x-wins { /* NEW: Class for Cross wins */
-    background-color: #b90a0a !important; /* Light red */
+.body-x-wins {
+    background-color: #d01616 !important; /* Light red */
     transition: background-color 1s ease-in-out;
 }
 
-/* Firework Container and Spark styles are already there, keep them as is: */
-.fireworks-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1000;
-}
-
-.firework-spark {
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background-color: #ff0; /* Default, will be overridden by JS */
-    opacity: 1;
-    pointer-events: none;
-}
-
+/* Firework Container and Spark styles */
 #xWinBurst,
 #oWinEffect {
     position: absolute;
@@ -225,6 +236,28 @@ button:active {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="65" font-family="Arial" font-size="80" fill="%2328a745" text-anchor="middle" dominant-baseline="central">✨</text></svg>');
 }
 
+.fireworks-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.firework-spark {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: rgb(222, 222, 21);
+    opacity: 1;
+    pointer-events: none;
+}
+
+
+/* Responsive adjustments */
 @media (max-width: 400px) {
     #gameboard {
         grid-template-columns: repeat(3, 90px);
@@ -244,7 +277,8 @@ button:active {
         padding: 10px 20px;
         font-size: 1em;
     }
+    .mode-selection button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
 }
-/* style.css */
-
-/* ... (your existing CSS) ... */
