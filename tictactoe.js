@@ -45,6 +45,10 @@ const winningConditions = [
 
 /**
  * Capitalizes the first letter of a given player string.
+ * This function is used to display the player names in sentence case,
+ * which is more user-friendly than the all-lowercase strings used
+ * internally to represent the players.
+ *
  * @param {string} player - The player string (e.g., 'circle' or 'x').
  * @returns {string} The capitalized player name (e.g., 'Circle' or 'X').
  */
@@ -54,31 +58,39 @@ function capitalizePlayerName(player) {
 
 /**
  * Updates the main status message displayed on the game interface.
- * @param {string} message - The message to display.
+ *
+ * This function is called to update the main game status message in the
+ * HTML interface. It checks if the infoDisplay element exists and is
+ * visible before attempting to update the message.
+ *
+ * @param {string} message - The message to display in the game status area.
  */
 function updateGameStatus(message) {
-    // Checks if the infoDisplay element exists before trying to update it.
-    if (infoDisplay) {
+    // Ensure the infoDisplay element exists and is visible before updating it.
+    if (infoDisplay && infoDisplay.style.display !== 'none') {
         infoDisplay.textContent = message; // Set the text content of the display.
-        infoDisplay.style.display = 'block'; // Ensure the display element is visible.
     }
 }
 
 /**
- * Updates the message indicating whose turn it is.
- * @param {string} player - The current player ('circle' or 'x').
+ * Updates the message indicating whose turn it is in the game.
+ * This function checks if the game has ended and updates the UI accordingly.
+ * @param {string} player - Represents the current player ('circle' or 'x').
  */
 function updateTurnMessage(player) {
-    // Checks if the turnMessageDisplay element exists.
+    // Ensure the turn message display element exists before attempting to update it.
     if (turnMessageDisplay) {
+        // Check if the game has ended.
         if (gameEnded) {
-            // If the game has ended, display a "Game Over!" message.
+            // Set the turn message to "Game Over!" if the game is concluded.
             turnMessageDisplay.textContent = "Game Over!";
         } else {
-            // Otherwise, display whose turn it is, capitalizing the player's name.
+            // Otherwise, update the turn message to indicate the current player's turn.
+            // The player's name is capitalized for a better user experience.
             turnMessageDisplay.textContent = `It's ${capitalizePlayerName(player)}'s turn!`;
         }
-        turnMessageDisplay.style.display = 'block'; // Ensure the display element is visible.
+        // Make sure the turn message display element is visible in the UI.
+        turnMessageDisplay.style.display = 'block';
     }
 }
 
@@ -86,6 +98,8 @@ function updateTurnMessage(player) {
 
 /**
  * Dynamically creates the 9 cell elements for the Tic-Tac-Toe board in the DOM.
+ * It clears the existing content inside the gameboard element and then
+ * appends the newly created cells to the gameboard container.
  */
 function createBoardCells() {
     // Checks if the gameboard element has been found.
@@ -93,16 +107,20 @@ function createBoardCells() {
         console.error("Game board element not found!"); // Log an error if it's missing.
         return; // Exit the function if no gameboard.
     }
-    gameboard.innerHTML = ''; // Clear any existing cells or content within the gameboard.
+    // Clear any existing cells or content within the gameboard.
+    gameboard.innerHTML = '';
+
     // Loop 9 times to create each of the 9 cells.
     for (let i = 0; i < 9; i++) {
         const cell = document.createElement('div'); // Create a new <div> element for the cell.
         cell.classList.add('cell'); // Add the 'cell' CSS class for styling.
         cell.id = i; // Assign a unique ID to each cell (0-8).
+
         // Add an event listener to each cell for click events.
         // When clicked, `handleCellClick` is called with the cell element and `false`
         // indicating it's a human-initiated click.
-        cell.addEventListener('click', () => handleCellClick(cell, false)); // IMPORTANT: Pass false for human click
+        cell.addEventListener('click', () => handleCellClick(cell, false));
+        // IMPORTANT: Pass false for human click
         gameboard.appendChild(cell); // Append the newly created cell to the gameboard container.
         // NOTE: The original `gameboard.appendChild(cell, false);` was incorrect.
         // `appendChild` only takes one argument. Corrected to `gameboard.appendChild(cell);`.
@@ -113,10 +131,12 @@ function createBoardCells() {
 /**
  * Renders the current state of the `currentBoard` array onto the visual HTML board cells.
  * @param {Array<string>} boardState - The 1D array representing the board's current state.
+ * It should contain only 'circle', 'x', or empty strings as values.
  */
 function renderBoard(boardState) {
     currentBoard = boardState; // Update the global currentBoard to the latest state.
     const cells = gameboard.children; // Get all the div elements that are children of the gameboard.
+
     // Iterate through each cell and update its content and styling based on the board state.
     for (let i = 0; i < boardState.length; i++) {
         const cell = cells[i]; // Get the specific cell element.
@@ -126,10 +146,14 @@ function renderBoard(boardState) {
             // Remove any existing player-specific classes ('O' or 'X').
             cell.classList.remove('O', 'X');
             // Add the appropriate player-specific class for styling (color, text shadow).
-            if (boardState[i] === 'circle') {
-                cell.classList.add('O');
-            } else if (boardState[i] === 'x') {
-                cell.classList.add('X');
+            switch (boardState[i]) {
+                case 'circle':
+                    cell.classList.add('O');
+                    break;
+                case 'x':
+                    cell.classList.add('X');
+                    break;
+                default: // Do nothing for empty cells.
             }
         }
     }
@@ -140,6 +164,8 @@ function renderBoard(boardState) {
 
 /**
  * Checks if a given player has achieved a winning combination on the current board.
+ * The winning combinations are defined in the `winningConditions` array,
+ * which contains arrays of three cell indices that represent possible winning lines.
  * @param {Array<string>} board - The current state of the game board.
  * @param {string} player - The player to check for a win ('circle' or 'x').
  * @returns {boolean} True if the player has won, false otherwise.
@@ -150,34 +176,46 @@ function checkForWin(board, player) {
     return winningConditions.some(combination => {
         const [a, b, c] = combination; // Destructure the combination into three cell indices.
         // Return true if all three cells in the combination are occupied by the current player.
+        // This means the player has won if all three cells in the combination have the same value (i.e., the player's mark).
         return board[a] === player && board[b] === player && board[c] === player;
     });
 }
 
 /**
  * Checks if the game board is full, indicating a potential draw.
+ * The game is considered a draw when there are no empty cells left
+ * on the board, and no player has won.
+ * 
  * @param {Array<string>} board - The current state of the game board.
  * @returns {boolean} True if the board has no empty cells, false otherwise.
  */
 function checkForDraw(board) {
-    // The `includes("")` method checks if the board array contains an empty string.
-    // `!` negates the result, so it returns true if there are NO empty strings (i.e., board is full).
-    return !board.includes("");
+    // Check if the board includes any empty strings.
+    // If it does not include any, the board is full.
+    return !board.includes(""); // Return true if no empty cells found.
 }
 
 /**
  * Hides all game-related UI elements and displays the mode selection buttons.
+ * This function is called when a new game is started (by clicking on a mode selection button).
  */
 function hideGameElements() {
-    // Hide various game elements by setting their display style to 'none'.
+    // Hide the gameboard.
     if (gameboard) gameboard.style.display = 'none';
+    // Hide the new game button.
     if (newGameBtn) newGameBtn.style.display = 'none';
+    // Hide the clear scores button.
     if (clearScoresBtn) clearScoresBtn.style.display = 'none';
-    const scoresDiv = document.querySelector('.scores'); // Select the scores container.
+    // Hide the scores container.
+    const scoresDiv = document.querySelector('.scores');
     if (scoresDiv) scoresDiv.style.display = 'none';
+    // Hide the turn message display.
     if (turnMessageDisplay) turnMessageDisplay.style.display = 'none';
+    // Hide the generic information display.
     if (infoDisplay) infoDisplay.style.display = 'none';
+    // Hide the commentary display.
     if (llmCommentaryDisplay) llmCommentaryDisplay.style.display = 'none';
+    // Hide the loading indicator initially.
     if (llmLoadingIndicator) llmLoadingIndicator.style.display = 'none';
     // Show the game mode selection buttons.
     if (singlePlayerBtn) singlePlayerBtn.style.display = 'block';
@@ -187,19 +225,29 @@ function hideGameElements() {
 
 /**
  * Shows all game-related UI elements and hides the mode selection buttons.
+ * This function is called when a new game is started.
  */
 function showGameElements() {
     // Display various game elements by setting their display style appropriately.
-    if (gameboard) gameboard.style.display = 'grid'; // Gameboard uses grid display.
+    // The gameboard uses a CSS grid display.
+    if (gameboard) gameboard.style.display = 'grid';
+    // Display the new game button.
     if (newGameBtn) newGameBtn.style.display = 'block';
+    // Display the clear scores button.
     if (clearScoresBtn) clearScoresBtn.style.display = 'block';
+    // Display the scores container, which uses a flexbox display.
     const scoresDiv = document.querySelector('.scores');
-    if (scoresDiv) scoresDiv.style.display = 'flex'; // Scores container uses flex display.
+    if (scoresDiv) scoresDiv.style.display = 'flex';
+    // Display the turn message display.
     if (turnMessageDisplay) turnMessageDisplay.style.display = 'block';
+    // Display the generic information display.
     if (infoDisplay) infoDisplay.style.display = 'block';
-    if (llmCommentaryDisplay) llmCommentaryDisplay.textContent = ''; // Clear previous commentary.
+    // Clear any previous commentary text.
+    if (llmCommentaryDisplay) llmCommentaryDisplay.textContent = '';
+    // Display the commentary display.
     if (llmCommentaryDisplay) llmCommentaryDisplay.style.display = 'block';
-    if (llmLoadingIndicator) llmLoadingIndicator.style.display = 'none'; // Hide loading indicator initially.
+    // Hide the loading indicator initially.
+    if (llmLoadingIndicator) llmLoadingIndicator.style.display = 'none';
     // Hide the game mode selection buttons.
     if (singlePlayerBtn) singlePlayerBtn.style.display = 'none';
     if (twoPlayerBtn) twoPlayerBtn.style.display = 'none';
@@ -213,9 +261,14 @@ function showGameElements() {
 function startGame(mode) {
     gameMode = mode; // Set the global game mode variable.
     console.log("startGame called. gameMode set to:", gameMode); // Debug log.
-    showGameElements(); // Display the game board and controls.
-    resetGame();        // Reset the board state, scores, and turn.
 
+    // Display the game board and controls.
+    showGameElements();
+
+    // Reset the board state, scores, and turn.
+    resetGame();
+
+    // Inform the user(s) about the game mode.
     if (gameMode === 'singlePlayer') {
         updateGameStatus("You are playing against the AI!"); // Inform the player.
         // Optional: Uncomment the following block if you want the AI to have a chance to go first.
@@ -235,6 +288,7 @@ function startGame(mode) {
 /**
  * Implements the AI's move logic (currently a simple random move).
  * Finds all empty cells and randomly selects one to play in.
+ * @summary AI chooses a random empty cell to make its move.
  */
 function makeAIMove() {
     console.log("makeAIMove called. Finding empty cells..."); // Debug log.
@@ -280,7 +334,7 @@ function makeAIMove() {
  * @param {boolean} [isAI=false] - Optional. A flag indicating if the call is from the AI (true) or a human (false).
  * Defaults to `false` for normal human clicks from event listeners.
  */
-function handleCellClick(cell, isAI = false) { // IMPORTANT: Default is false for human clicks.
+function handleCellClick(cell, isAI = false) {
     const cellId = parseInt(cell.id); // Get the numerical ID of the clicked cell from its HTML ID.
     console.log(`handleCellClick called for cell ID: ${cellId}. Current Player: ${currentPlayer}. Game Ended: ${gameEnded}. Game Mode: ${gameMode}. Is AI: ${isAI}.`); // Debug log for tracing.
 
@@ -387,6 +441,9 @@ function handleCellClick(cell, isAI = false) { // IMPORTANT: Default is false fo
  */
 function updateScores(winner) {
     // Increment the appropriate score counter based on the winner.
+    // If the winner is 'circle', increment the Player O score.
+    // If the winner is 'x', increment the Player X score.
+    // If the winner is 'draw', increment the Ties score.
     if (winner === 'circle') {
         playerOScore++;
     } else if (winner === 'x') {
@@ -395,6 +452,9 @@ function updateScores(winner) {
         tiesScore++;
     }
     // Update the text content of the score display elements.
+    // Set the text content of the Player O score element to the current Player O score.
+    // Set the text content of the Player X score element to the current Player X score.
+    // Set the text content of the Ties score element to the current Ties score.
     playerOCircleScoreDisplay.textContent = playerOScore;
     playerXCrossScoreDisplay.textContent = playerXScore;
     tiesScoreDisplay.textContent = tiesScore;
@@ -406,37 +466,44 @@ function updateScores(winner) {
  * Loads saved scores from the browser's local storage.
  */
 function loadScores() {
+    console.log("Attempting to load scores from localStorage..."); // Debug log.
     const storedScores = localStorage.getItem('ticTacToeScores'); // Attempt to retrieve scores.
     if (storedScores) { // If scores were found in local storage.
+        console.log("Scores found in localStorage. Attempting to parse JSON..."); // Debug log.
         try {
             const scores = JSON.parse(storedScores); // Parse the JSON string back into an object.
+            console.log("Parsed scores:", scores); // Debug log.
             // Assign loaded scores, defaulting to 0 if a property is missing (for robustness).
             playerOScore = scores.playerOScore || 0;
             playerXScore = scores.playerXScore || 0;
             tiesScore = scores.tiesScore || 0;
+            console.log("Loaded scores:", playerOScore, playerXScore, tiesScore); // Debug log.
             // Update the score display elements with loaded scores.
             playerOCircleScoreDisplay.textContent = playerOScore;
             playerXCrossScoreDisplay.textContent = playerXScore;
             tiesScoreDisplay.textContent = tiesScore;
-            console.log("Scores loaded from localStorage."); // Debug log.
+            console.log("Scores loaded from localStorage. Updated display elements."); // Debug log.
         } catch (e) {
             // Catch and log any errors that occur during JSON parsing.
             console.error("Error parsing scores from localStorage:", e); // ERROR LOG.
         }
     } else {
-        console.log("No scores found in localStorage."); // Debug log if no scores were saved previously.
+        console.log("No scores found in localStorage. Initializing scores to 0."); // Debug log if no scores were saved previously.
     }
 }
 
 /**
  * Saves the current game scores to the browser's local storage.
+ * @function saveScores
+ * @description Saves the current scores for Player O, Player X, and ties to the browser's local storage.
+ *              This is called whenever the scores are updated (i.e., after a game is finished).
  */
 function saveScores() {
     // Create an object to store all current scores.
     const scores = {
-        playerOScore,
-        playerXScore,
-        tiesScore
+        playerOScore, // The number of games Player O has won.
+        playerXScore, // The number of games Player X has won.
+        tiesScore     // The number of games that have ended in a draw.
     };
     // Convert the scores object to a JSON string and store it in local storage.
     localStorage.setItem('ticTacToeScores', JSON.stringify(scores));
@@ -445,37 +512,63 @@ function saveScores() {
 
 /**
  * Resets all scores to zero, updates the UI, and clears local storage.
+ * This function is called when the user clicks the "Clear Scores" button.
  */
 function clearScores() {
-    playerOScore = 0; // Reset O score.
-    playerXScore = 0; // Reset X score.
-    tiesScore = 0;    // Reset ties score.
-    // Update score displays to show zeros.
+    // --- Reset Scores ---
+    // Set all player and tie scores to zero.
+    playerOScore = 0;
+    playerXScore = 0;
+    tiesScore = 0;
+
+    // --- Update UI Elements ---
+    // Update the text content of the score display elements to reflect the reset scores.
     playerOCircleScoreDisplay.textContent = playerOScore;
     playerXCrossScoreDisplay.textContent = playerXScore;
     tiesScoreDisplay.textContent = tiesScore;
-    localStorage.removeItem('ticTacToeScores'); // Remove the saved scores from local storage.
+
+    // --- Clear Local Storage ---
+    // Remove the saved scores from local storage to ensure they are not loaded again.
+    localStorage.removeItem('ticTacToeScores');
+
+    // Log the score clearing operation for debugging purposes.
     console.log("Scores cleared from display and localStorage."); // Debug log.
 }
 
 /**
  * Resets the entire game state to start a new round.
+ * Clears the board, resets the current player, and updates the UI elements to reflect a new game start.
  */
 function resetGame() {
-    currentBoard = ["", "", "", "", "", "", "", "", ""]; // Clear the board array.
-    currentPlayer = 'circle'; // Reset current player to O (circle) for the new game.
-    gameEnded = false; // Reset gameEnded flag.
-    renderBoard(currentBoard); // Render the empty board.
-    updateGameStatus("Good luck, have fun!"); // Set initial game status message.
-    updateTurnMessage(currentPlayer); // Display whose turn it is.
-    if (llmCommentaryDisplay) llmCommentaryDisplay.textContent = ''; // Clear any previous LLM commentary.
+    // Clear the board array to represent an empty board.
+    currentBoard = ["", "", "", "", "", "", "", "", ""];
+
+    // Reset the current player to 'circle' (O) for the start of the new game.
+    currentPlayer = 'circle';
+
+    // Reset the gameEnded flag to allow the game to proceed.
+    gameEnded = false;
+
+    // Render the empty board to the UI.
+    renderBoard(currentBoard);
+
+    // Set the initial game status message for players.
+    updateGameStatus("Good luck, have fun!");
+
+    // Display the turn message for the current player.
+    updateTurnMessage(currentPlayer);
+
+    // Clear any previous LLM commentary from the display.
+    if (llmCommentaryDisplay) llmCommentaryDisplay.textContent = '';
+
     console.log("Game reset. Board cleared. Current Player set to 'circle'."); // Debug log.
 
-    // Remove any win-specific background classes from the body.
+    // Remove any win-specific background classes from the body to reset visual effects.
     if (body) {
         body.classList.remove('body-o-wins', 'body-x-wins');
     }
-    // Ensure the game board is clickable after reset.
+
+    // Ensure the game board is clickable after reset for player interactions.
     if (gameboard) {
         gameboard.style.pointerEvents = 'auto';
     }
@@ -483,19 +576,26 @@ function resetGame() {
 
 /**
  * Triggers a fireworks animation on the screen.
+ *
+ * Creates a container for the fireworks sparks and appends it to the body.
+ * Defines colors for the fireworks based on the current winning player.
+ * Creates multiple firework explosions using the createFirework function.
+ * Sets a timeout to remove the fireworks container after 2 seconds.
  */
 function triggerFireworks() {
     console.log("Triggering fireworks..."); // Debug log.
+
     // Create a container for the fireworks sparks.
     const fireworksContainer = document.createElement('div');
     fireworksContainer.classList.add('fireworks-container'); // Add CSS class for styling.
     document.body.appendChild(fireworksContainer); // Append container to the body.
 
     // Define colors for the fireworks based on the current winning player.
+    // Colors are red, orange, yellow for X wins and green, light green, light blue for O wins.
     const colors = currentPlayer === 'x' ? ['#ff0000', '#ff6600', '#ffcc00'] : ['#00ff00', '#00cc66', '#33ff33'];
-    const numberOfExplosions = 10; // Number of firework explosions to create.
 
     // Create multiple firework explosions.
+    const numberOfExplosions = 10; // Number of firework explosions to create.
     for (let i = 0; i < numberOfExplosions; i++) {
         createFirework(fireworksContainer, colors); // Call function to create individual firework.
     }
@@ -524,17 +624,23 @@ function createFirework(container, colors) {
 
     // Create and animate individual sparks for the firework.
     for (let i = 0; i < numberOfSparks; i++) {
-        const spark = document.createElement('div'); // Create a div for a single spark.
+        // Create a div for a single spark.
+        const spark = document.createElement('div');
         spark.classList.add('firework-spark'); // Add CSS class for styling.
         spark.style.backgroundColor = color; // Set the spark's color.
-        const angle = Math.random() * Math.PI * 2; // Random angle (0 to 360 degrees in radians).
-        const speed = Math.random() * 5 + 2; // Random initial speed for the spark.
-        const vx = Math.cos(angle) * speed; // X-component of velocity.
-        const vy = Math.sin(angle) * speed; // Y-component of velocity.
-        spark.style.left = `${x}px`; // Set initial X position.
-        spark.style.top = `${y}px`; // Set initial Y position.
+        // Generate a random angle (0 to 360 degrees in radians) for the spark's velocity.
+        const angle = Math.random() * Math.PI * 2;
+        // Generate a random initial speed for the spark (between 2 and 7).
+        const speed = Math.random() * 5 + 2;
+        // Calculate the X and Y components of the velocity vector.
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed;
+        // Set the initial position of the spark to the firework's center.
+        spark.style.left = `${x}px`;
+        spark.style.top = `${y}px`;
         container.appendChild(spark); // Add the spark to the fireworks container.
-        animateSpark(spark, vx, vy); // Start the animation for this spark.
+        // Start the animation for this spark.
+        animateSpark(spark, vx, vy);
     }
 }
 
@@ -545,20 +651,41 @@ function createFirework(container, colors) {
  * @param {number} vy - Initial vertical velocity.
  */
 function animateSpark(spark, vx, vy) {
-    let life = 100; // Lifespan of the spark (controls opacity and existence).
-    const gravity = 0.05; // Downward acceleration to simulate gravity.
-    const fadeSpeed = 1; // Rate at which the spark fades.
+    console.log("Starting animation for spark:", spark); // Debug log.
+    /**
+     * Lifespan of the spark, controls opacity and existence.
+     * @type {number}
+     */
+    let life = 100;
 
-    // Recursive function to update spark position and properties each animation frame.
+    /**
+     * Downward acceleration to simulate gravity.
+     * @type {number}
+     */
+    const gravity = 0.05;
+
+    /**
+     * Rate at which the spark fades.
+     * @type {number}
+     */
+    const fadeSpeed = 1;
+
+    /**
+     * Recursive function to update spark position and properties each animation frame.
+     * @private
+     */
     function update() {
+        console.log("Updating spark:", spark); // Debug log.
         // If the spark's life is depleted, remove it and stop animation.
         if (life <= 0) {
             if (spark.parentNode) { // Check if spark is still in the DOM.
+                console.log("Removing spark:", spark); // Debug log.
                 spark.remove(); // Remove the spark element.
             }
             return; // Stop animation for this spark.
         }
 
+        console.log("Updating spark position and opacity..."); // Debug log.
         // Get current position and calculate new opacity.
         const x = parseFloat(spark.style.left);
         const y = parseFloat(spark.style.top);
@@ -569,10 +696,20 @@ function animateSpark(spark, vx, vy) {
         spark.style.top = `${y + vy}px`;
         spark.style.opacity = opacity; // Apply new opacity.
 
-        vy += gravity; // Apply gravity (increase downward velocity).
-        life -= fadeSpeed; // Decrease spark's life.
+        console.log("spark.style.left:", spark.style.left); // Debug log.
+        console.log("spark.style.top:", spark.style.top); // Debug log.
+        console.log("spark.style.opacity:", spark.style.opacity); // Debug log.
 
-        requestAnimationFrame(update); // Request the next animation frame.
+        // Apply gravity (increase downward velocity).
+        vy += gravity;
+        console.log("Updated vertical velocity (vy):", vy); // Debug log.
+
+        // Decrease spark's life.
+        life -= fadeSpeed;
+        console.log("Remaining life of spark:", life); // Debug log.
+
+        // Request the next animation frame.
+        requestAnimationFrame(update);
     }
     update(); // Start the animation loop.
 }
