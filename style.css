@@ -1,284 +1,335 @@
 /* style.css */
 
+/* --- General Body Styling --- */
+/* Styles for the entire HTML body, setting up the basic layout and background. */
 body {
-    font-family: 'Inter', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f0f2f5; /* Light grey background */
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow: hidden; /* Prevent scrollbars due to fireworks */
+    font-family: 'Inter', sans-serif; /* Sets the font for the entire page */
+    display: flex; /* Uses Flexbox for layout */
+    justify-content: center; /* Horizontally centers content */
+    align-items: center; /* Vertically centers content */
+    min-height: 100vh; /* Ensures the body takes at least the full viewport height */
+    background-color: #f0f2f5; /* Light grey background color */
+    margin: 0; /* Removes default body margin */
+    padding: 20px; /* Adds padding around the content */
+    box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+    overflow: hidden; /* Prevents scrollbars, especially useful for full-screen effects like fireworks */
 }
 
+/* --- Game Container Styling --- */
+/* Styles for the main box that holds all game elements. */
 .game-container {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    max-width: 450px;
-    width: 100%;
-    box-sizing: border-box;
+    background-color: #ffffff; /* White background for the container */
+    padding: 30px; /* Padding inside the container */
+    border-radius: 12px; /* Slightly rounded corners */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    text-align: center; /* Centers inline content (like text and buttons) */
+    max-width: 450px; /* Maximum width of the container */
+    width: 100%; /* Ensures it takes full width up to max-width */
+    box-sizing: border-box; /* Includes padding in width calculation */
 }
 
+/* --- Heading (H1) Styling --- */
+/* Styles for the main game title. */
 h1 {
-    color: #333;
-    margin-bottom: 25px;
-    font-size: 2.8em;
-    letter-spacing: -1px;
+    color: #333; /* Dark grey text color */
+    margin-bottom: 25px; /* Space below the heading */
+    font-size: 2.8em; /* Large font size relative to parent */
+    letter-spacing: -1px; /* Slightly tightens letter spacing */
 }
 
+/* --- Mode Selection Section Styling --- */
+/* Styles for the container holding the single/two player buttons. */
 .mode-selection {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+    margin-bottom: 20px; /* Space below the mode selection buttons */
+    display: flex; /* Uses Flexbox for button layout */
+    justify-content: center; /* Centers buttons horizontally */
+    flex-wrap: wrap; /* Allows buttons to wrap to the next line on smaller screens */
 }
 
+/* --- Mode Selection Buttons Styling --- */
+/* Styles for the individual "Single Player" and "Two Player" buttons. */
 .mode-selection button {
-    background-color: #4CAF50;
-    margin: 5px;
-    padding: 10px 20px;
-    font-size: 1em;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.2);
+    background-color: #4CAF50; /* Green background */
+    margin: 5px; /* Space around each button */
+    padding: 10px 20px; /* Padding inside buttons */
+    font-size: 1em; /* Standard font size */
+    color: white; /* White text color */
+    border: none; /* No border */
+    border-radius: 6px; /* Rounded corners */
+    cursor: pointer; /* Changes cursor to a pointer on hover */
+    transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth transitions for hover effects */
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.2); /* Soft shadow for depth */
 }
 
+/* Hover effect for mode selection buttons */
 .mode-selection button:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
+    background-color: #45a049; /* Slightly darker green on hover */
+    transform: translateY(-2px); /* Lifts the button slightly on hover */
 }
 
+/* Active (clicked) effect for mode selection buttons */
 .mode-selection button:active {
-    background-color: #3e8e41;
-    transform: translateY(0);
+    background-color: #3e8e41; /* Even darker green when clicked */
+    transform: translateY(0); /* Returns button to original position */
 }
 
-
+/* --- Scores Display Styling --- */
+/* Styles for the section showing player scores and ties. */
 .scores {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-    font-size: 1.1em;
-    color: #555;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
+    display: flex; /* Uses Flexbox for score alignment */
+    justify-content: space-around; /* Distributes space evenly around score paragraphs */
+    margin-bottom: 20px; /* Space below the scores section */
+    font-size: 1.1em; /* Slightly larger font size */
+    color: #555; /* Dark grey text color */
+    padding: 10px 0; /* Vertical padding */
+    border-bottom: 1px solid #eee; /* Light grey bottom border */
 }
 
+/* Paragraph styling within the scores section */
 .scores p {
-    margin: 0;
-    font-weight: bold;
+    margin: 0; /* Removes default paragraph margin */
+    font-weight: bold; /* Makes the text bold */
 }
 
+/* --- Turn Message and Info Display Styling --- */
+/* Styles for messages indicating whose turn it is or general game info. */
 #turnMessage,
 #info {
-    font-size: 1.2em;
-    margin-top: 15px;
-    margin-bottom: 20px;
-    font-weight: bold;
-    color: #007bff;
+    font-size: 1.2em; /* Larger font size */
+    margin-top: 15px; /* Space above the messages */
+    margin-bottom: 20px; /* Space below the messages */
+    font-weight: bold; /* Bold text */
+    color: #007bff; /* Blue text color */
 }
 
+/* --- Game Board Styling --- */
+/* Styles for the main 3x3 Tic-Tac-Toe grid. */
 #gameboard {
-    display: grid;
-    grid-template-columns: repeat(3, 110px);
-    grid-template-rows: repeat(3, 110px);
-    width: 330px;
-    height: 330px;
-    border: 4px solid #333;
-    margin: 25px auto;
-    background-color: #f8f8f8;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-    border-radius: 5px;
-    overflow: hidden;
+    display: grid; /* Uses CSS Grid for layout */
+    grid-template-columns: repeat(3, 110px); /* Creates 3 columns, each 110px wide */
+    grid-template-rows: repeat(3, 110px); /* Creates 3 rows, each 110px high */
+    width: 330px; /* Total width of the grid (3 * 110px) */
+    height: 330px; /* Total height of the grid (3 * 110px) */
+    border: 4px solid #333; /* Dark border around the game board */
+    margin: 25px auto; /* Centers the board horizontally with space above/below */
+    background-color: #f8f8f8; /* Very light grey background for cells */
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05); /* Subtle inner shadow for depth */
+    border-radius: 5px; /* Slightly rounded corners for the board */
+    overflow: hidden; /* Ensures inner cell borders don't spill out of the rounded corners */
 }
 
+/* --- Individual Cell Styling --- */
+/* Styles for each of the 9 cells on the game board. */
 .cell {
-    width: 110px;
-    height: 110px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 4.5em;
-    font-weight: bold;
-    cursor: pointer;
-    border: 1px solid #ddd;
-    box-sizing: border-box;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    color: #212529;
+    width: 110px; /* Width of each cell */
+    height: 110px; /* Height of each cell */
+    display: flex; /* Uses Flexbox to center content (O or X) */
+    justify-content: center; /* Horizontally centers content */
+    align-items: center; /* Vertically centers content */
+    font-size: 4.5em; /* Large font size for O/X symbols */
+    font-weight: bold; /* Bold text for symbols */
+    cursor: pointer; /* Changes cursor to a pointer on hover */
+    border: 1px solid #ddd; /* Light grey border between cells */
+    box-sizing: border-box; /* Includes padding and border in the element's total size */
+    transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth transitions for hover effects */
+    color: #212529; /* Default color for symbols (overridden by .O and .X) */
 }
 
+/* Hover effect for cells */
 .cell:hover {
-    background-color: #e9ecef;
-    transform: scale(1.02);
+    background-color: #e9ecef; /* Slightly darker background on hover */
+    transform: scale(1.02); /* Slightly enlarges the cell on hover */
 }
 
+/* Styling for 'O' (circle) player's mark */
 .cell.O {
-    color: #28a745;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    color: #28a745; /* Green color for 'O' */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Subtle text shadow for depth */
 }
 
+/* Styling for 'X' (cross) player's mark */
 .cell.X {
-    color: #dc3545;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    color: #dc3545; /* Red color for 'X' */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Subtle text shadow for depth */
 }
 
+/* Active (clicked) effect for cells */
 .cell:active {
-    transform: scale(0.98);
+    transform: scale(0.98); /* Slightly shrinks the cell when clicked */
 }
 
+/* --- General Button Styling --- */
+/* Styles for the "Start New Game" and "Clear Scores" buttons. */
 button {
-    background-color: #007bff;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1.1em;
-    margin: 8px;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    padding: 12px 25px; /* Padding inside buttons */
+    border: none; /* No border */
+    border-radius: 6px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 1.1em; /* Slightly larger font size */
+    margin: 8px; /* Space around buttons */
+    transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth transitions for hover effects */
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2); /* Soft shadow for depth */
 }
 
+/* Hover effect for general buttons */
 button:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Lifts the button slightly */
 }
 
+/* Active (clicked) effect for general buttons */
 button:active {
-    background-color: #004085;
-    transform: translateY(0);
+    background-color: #004085; /* Even darker blue when clicked */
+    transform: translateY(0); /* Returns button to original position */
 }
 
+/* --- Specific "Clear Scores" Button Styling --- */
+/* Overrides for the Clear Scores button to give it a different look. */
 #clearScoresBtn {
-    background-color: #6c757d;
-    box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2);
+    background-color: #6c757d; /* Grey background */
+    box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2); /* Grey shadow */
 }
 
+/* Hover effect for Clear Scores button */
 #clearScoresBtn:hover {
-    background-color: #5a6268;
+    background-color: #5a6268; /* Darker grey on hover */
 }
 
+/* Active (clicked) effect for Clear Scores button */
 #clearScoresBtn:active {
-    background-color: #495057;
+    background-color: #495057; /* Even darker grey when clicked */
 }
 
+/* --- LLM Commentary Section Styling --- */
+/* Styles for the section displaying AI-generated commentary. */
 .llm-commentary-section {
-    margin-top: 30px;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    border: 1px solid #e2e6ea;
-    min-height: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-style: italic;
-    color: #6c757d;
+    margin-top: 30px; /* Space above the section */
+    padding: 20px; /* Padding inside the section */
+    background-color: #f8f9fa; /* Very light grey background */
+    border-radius: 10px; /* Rounded corners */
+    border: 1px solid #e2e6ea; /* Light border */
+    min-height: 80px; /* Minimum height to prevent content jumping */
+    display: flex; /* Uses Flexbox for centering content */
+    flex-direction: column; /* Stacks content vertically */
+    justify-content: center; /* Vertically centers content */
+    align-items: center; /* Horizontally centers content */
+    font-style: italic; /* Italic text */
+    color: #6c757d; /* Muted grey text color */
 }
 
+/* Styling for the commentary text itself. */
 #llmCommentaryDisplay {
-    font-size: 1.1em;
-    line-height: 1.5;
-    text-align: center;
-    margin: 0;
+    font-size: 1.1em; /* Slightly larger font size */
+    line-height: 1.5; /* Increased line spacing for readability */
+    text-align: center; /* Centers the text */
+    margin: 0; /* Removes default paragraph margin */
 }
 
+/* Styling for the loading indicator message for LLM commentary. */
 .llm-loading-indicator {
-    margin-top: 10px;
-    font-size: 0.9em;
-    color: #007bff;
+    margin-top: 10px; /* Space above the indicator */
+    font-size: 0.9em; /* Smaller font size */
+    color: #007bff; /* Blue text color */
 }
 
+/* Utility class to hide elements */
 .hidden {
-    display: none !important; /* Use !important for hidden to ensure it overrides other display properties */
+    display: none !important; /* Hides the element; !important ensures it overrides other display properties */
 }
 
+/* --- Body Background Change on Win --- */
+/* Styling for the body background when Player O wins. */
 .body-o-wins {
-    background-color: #0a6f0a !important; /* Light green for Circle wins */
-    transition: background-color 1s ease-in-out;
+    background-color: #0a6f0a !important; /* Darker green background for Circle wins */
+    transition: background-color 1s ease-in-out; /* Smooth transition for background color change */
 }
 
+/* Styling for the body background when Player X wins. */
 .body-x-wins {
-    background-color: #d01616 !important; /* Light red */
-    transition: background-color 1s ease-in-out;
+    background-color: #d01616 !important; /* Darker red background for Cross wins */
+    transition: background-color 1s ease-in-out; /* Smooth transition for background color change */
 }
 
-/* Firework Container and Spark styles */
+/* --- Firework Container and Spark Styles (Visual Effects) --- */
+/* These are older/alternative visual effects, effectively replaced by JS-generated fireworks but kept for compatibility. */
 #xWinBurst,
 #oWinEffect {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 200px;
-    height: 200px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    display: none;
-    z-index: 100;
+    position: absolute; /* Allows precise positioning */
+    top: 50%; /* Centers vertically */
+    left: 50%; /* Centers horizontally */
+    transform: translate(-50%, -50%); /* Adjusts for element's own size to truly center */
+    width: 200px; /* Fixed width */
+    height: 200px; /* Fixed height */
+    background-size: contain; /* Scales background image to fit */
+    background-repeat: no-repeat; /* Prevents background image from repeating */
+    background-position: center; /* Centers background image */
+    display: none; /* Hidden by default */
+    z-index: 100; /* Ensures it appears above other elements */
 }
 
+/* Specific background image for X win burst */
 #xWinBurst {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="65" font-family="Arial" font-size="80" fill="%23dc3545" text-anchor="middle" dominant-baseline="central">💥</text></svg>');
 }
 
+/* Specific background image for O win effect */
 #oWinEffect {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="65" font-family="Arial" font-size="80" fill="%2328a745" text-anchor="middle" dominant-baseline="central">✨</text></svg>');
 }
 
+/* Container for JavaScript-generated firework sparks. */
 .fireworks-container {
-    position: fixed;
+    position: fixed; /* Positions relative to the viewport */
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1000;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    pointer-events: none; /* Makes the container non-interactive, allowing clicks to pass through */
+    z-index: 1000; /* Ensures fireworks appear on top of everything */
 }
 
+/* Styling for individual firework sparks (small animated dots). */
 .firework-spark {
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background-color: rgb(222, 222, 21);
-    opacity: 1;
-    pointer-events: none;
+    position: absolute; /* Allows precise positioning within its container */
+    width: 5px; /* Size of the spark */
+    height: 5px; /* Size of the spark */
+    border-radius: 50%; /* Makes the spark circular */
+    background-color: rgb(222, 222, 21); /* Yellow color */
+    opacity: 1; /* Fully opaque initially */
+    pointer-events: none; /* Makes individual sparks non-interactive */
 }
 
 
-/* Responsive adjustments */
+/* --- Responsive Adjustments (for smaller screens) --- */
+/* Media query to apply styles when the screen width is 400px or less. */
 @media (max-width: 400px) {
+    /* Adjustments for the game board grid */
     #gameboard {
-        grid-template-columns: repeat(3, 90px);
-        grid-template-rows: repeat(3, 90px);
-        width: 270px;
-        height: 270px;
+        grid-template-columns: repeat(3, 90px); /* Smaller columns */
+        grid-template-rows: repeat(3, 90px); /* Smaller rows */
+        width: 270px; /* Smaller total width */
+        height: 270px; /* Smaller total height */
     }
+    /* Adjustments for individual cells */
     .cell {
-        width: 90px;
-        height: 90px;
-        font-size: 3.5em;
+        width: 90px; /* Smaller cell width */
+        height: 90px; /* Smaller cell height */
+        font-size: 3.5em; /* Smaller font size for O/X */
     }
+    /* Adjustments for the main heading */
     h1 {
-        font-size: 2em;
+        font-size: 2em; /* Smaller heading font size */
     }
+    /* Adjustments for general buttons */
     button {
-        padding: 10px 20px;
-        font-size: 1em;
+        padding: 10px 20px; /* Smaller button padding */
+        font-size: 1em; /* Smaller button font size */
     }
+    /* Adjustments for mode selection buttons */
     .mode-selection button {
-        padding: 8px 15px;
-        font-size: 0.9em;
+        padding: 8px 15px; /* Smaller padding */
+        font-size: 0.9em; /* Smaller font size */
     }
 }
