@@ -1,46 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta tags for character encoding and responsive design -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title of the webpage -->
     <title>Tic Tac Toe Game</title>
+    <!-- Link to external CSS file for styling -->
     <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts: Importing the 'Inter' font family -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     </head>
 <body>
+    <!-- Main game container -->
     <div class="game-container">
+        <!-- Title of the game -->
         <h1>Tic Tac Toe</h1>
-
+        <!-- Mode selection buttons: Single player vs AI, or two players -->
         <div class="mode-selection">
             <button id="singlePlayerBtn">Single Player (vs. AI)</button>
             <button id="twoPlayerBtn">Two Player (Human vs. Human)</button>
         </div>
-
+        <!-- Display the scores for Circle (O), Cross (X), and Ties -->
         <div class="scores">
             <p>Circle (O) Wins: <span id="playerOCircleScore">0</span></p>
             <p>Cross (X) Wins: <span id="playerXCrossScore">0</span></p>
             <p>Ties: <span id="tiesScore">0</span></p>
         </div>
-
+        <!-- Message displaying the current turn or game state -->
         <p id="turnMessage" class="turn-message"></p>
+        <!-- Game status info (could be used for displaying instructions or game status) -->
         <p id="info" class="game-status"> Hello, Welcome</p>
-
+        <!-- Gameboard where the Tic Tac Toe grid will be rendered -->
         <div id="gameboard">
             </div>
-
+            <!-- Buttons for starting a new game or clearing the score -->
         <button id="newGameBtn">Start New Game</button>
         <button id="clearScoresBtn">Clear Scores</button>
-
+            <!-- Section for LLM (AI-generated commentary) -->
         <div class="llm-commentary-section">
+            <!-- Display AI commentary about the game -->
             <p id="llmCommentaryDisplay" class="llm-commentary-text"></p>
+            <!-- Loading indicator for when commentary is being generated -->
             <p id="llmLoadingIndicator" class="llm-loading-indicator hidden">Generating commentary...</p>
         </div>
-
+        <!-- Effects for X and O wins (animations or visual effects) -->
         <div id="xWinBurst" class="x-win-burst"></div>
         <div id="oWinEffect" class="o-win-effect"></div>
 
     </div>
-
+     <!-- Link to external JavaScript file for game logic -->
     <script src="tictactoe.js"></script>
 </body>
 </html>
