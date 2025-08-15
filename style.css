@@ -7,12 +7,20 @@ body {
     display: flex; /* Uses Flexbox for layout */
     justify-content: center; /* Horizontally centers content */
     align-items: center; /* Vertically centers content */
-    min-height: 100vh; /* Ensures the body takes at least the full viewport height */
+    /* min-height: 100vh; Ensures the body takes at least the full viewport height */
     background-color: #f0f2f5; /* Light grey background color */
     margin: 0; /* Removes default body margin */
     padding: 20px; /* Adds padding around the content */
     box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
-    overflow: hidden; /* Prevents scrollbars, especially useful for full-screen effects like fireworks */
+    overflow: fullscreen  ; /* Prevents scrollbars, especially useful for full-screen effects like fireworks */
+}
+:root { --header: 64px; } /* set to your real header height */
+body, #root, .App { min-height: 100svh; margin: 0; }
+header { position: sticky; top: 0; z-index: 10; }
+main {
+  min-height: calc(100svh - var(--header));
+  overflow-y: auto;
+  padding-bottom: 2rem; /* leaves room for the button */
 }
 
 /* --- Game Container Styling --- */
@@ -36,7 +44,18 @@ h1 {
     font-size: 2.8em; /* Large font size relative to parent */
     letter-spacing: -1px; /* Slightly tightens letter spacing */
 }
-
+.fullscreen, .screen,main,#root,.App{
+    min-height: 100svh;
+}
+.fullscreen,.screen,main{
+    overflow-y:auto
+}
+html, body { 
+    height: 100vh !important;
+    min-height: 100% !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling:touch;
+}
 /* --- Mode Selection Section Styling --- */
 /* Styles for the container holding the single/two player buttons. */
 .mode-selection {
@@ -190,17 +209,23 @@ button:active {
 #clearScoresBtn {
     background-color: #6c757d; /* Grey background */
     box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2); /* Grey shadow */
+    margin: 10px;
 }
 
 /* Hover effect for Clear Scores button */
 #clearScoresBtn:hover {
     background-color: #5a6268; /* Darker grey on hover */
+    margin: 10px; /* Add some margin to give them space */
 }
+    
+
 
 /* Active (clicked) effect for Clear Scores button */
 #clearScoresBtn:active {
     background-color: #495057; /* Even darker grey when clicked */
+    margin: 10px; /* Add some margin to give them space */
 }
+
 
 /* --- LLM Commentary Section Styling --- */
 /* Styles for the section displaying AI-generated commentary. */
@@ -300,27 +325,56 @@ button:active {
     opacity: 1; /* Fully opaque initially */
     pointer-events: none; /* Makes individual sparks non-interactive */
 }
-
+.screen{min-height: 100vh;}
+.input, button, select {
+    font-size: 16px;
+}
 
 /* --- Responsive Adjustments (for smaller screens) --- */
 /* Media query to apply styles when the screen width is 400px or less. */
-@media (max-width: 400px) {
+.card {
+    width: min(100%, 420px);
+}
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+@media (max-width: 600px) {
+    h1{
+        font-size: 2em;
+    }
+    .scores{
+        flex-direction: column;
+        gap: 5px
+    }
+    .mode-selection button{
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
     /* Adjustments for the game board grid */
     #gameboard {
-        grid-template-columns: repeat(3, 90px); /* Smaller columns */
-        grid-template-rows: repeat(3, 90px); /* Smaller rows */
-        width: 270px; /* Smaller total width */
-        height: 270px; /* Smaller total height */
+    width: 80vw;
+    height: 80vw;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    margin: 20px auto;
+    }
+    #newGameBtn,#clearScoresBtn{
+        width: 100%;
     }
     /* Adjustments for individual cells */
     .cell {
-        width: 90px; /* Smaller cell width */
-        height: 90px; /* Smaller cell height */
-        font-size: 3.5em; /* Smaller font size for O/X */
+        width: 100%; /* Smaller cell width */
+        height: 100%; /* Smaller cell height */
+        font-size: 15vw; /* Smaller font size for O/X */
     }
-    /* Adjustments for the main heading */
-    h1 {
-        font-size: 2em; /* Smaller heading font size */
+    .game-controls{
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 80%;
+        margin: 20px auto;
     }
     /* Adjustments for general buttons */
     button {

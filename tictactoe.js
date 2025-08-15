@@ -45,6 +45,7 @@ const winningConditions = [
 
 /**
  * Capitalizes the first letter of a given player string.
+ *
  * This function is used to display the player names in sentence case,
  * which is more user-friendly than the all-lowercase strings used
  * internally to represent the players.
@@ -53,7 +54,13 @@ const winningConditions = [
  * @returns {string} The capitalized player name (e.g., 'Circle' or 'X').
  */
 function capitalizePlayerName(player) {
-    return player.charAt(0).toUpperCase() + player.slice(1);
+    // Get the first character of the player string.
+    const firstChar = player.charAt(0);
+    // Get the rest of the string (everything after the first character).
+    const restOfString = player.slice(1);
+    // Return the capitalized player name by concatenating the
+    // capitalized first character with the rest of the string.
+    return firstChar.toUpperCase() + restOfString;
 }
 
 /**
@@ -651,41 +658,31 @@ function createFirework(container, colors) {
  * @param {number} vy - Initial vertical velocity.
  */
 function animateSpark(spark, vx, vy) {
-    console.log("Starting animation for spark:", spark); // Debug log.
-    /**
-     * Lifespan of the spark, controls opacity and existence.
-     * @type {number}
-     */
+    // Lifespan of the spark, controls opacity and existence.
     let life = 100;
 
-    /**
-     * Downward acceleration to simulate gravity.
-     * @type {number}
-     */
+    // Downward acceleration to simulate gravity.
     const gravity = 0.05;
 
-    /**
-     * Rate at which the spark fades.
-     * @type {number}
-     */
+    // Rate at which the spark fades.
     const fadeSpeed = 1;
 
     /**
      * Recursive function to update spark position and properties each animation frame.
+     * This function is called repeatedly by the browser's animation frame scheduler
+     * to update the spark's position, opacity, and velocity.
      * @private
+     * @param {number} [timestamp] - The timestamp of the current animation frame, provided by the browser.
      */
-    function update() {
-        console.log("Updating spark:", spark); // Debug log.
+    function update(timestamp) {
         // If the spark's life is depleted, remove it and stop animation.
         if (life <= 0) {
             if (spark.parentNode) { // Check if spark is still in the DOM.
-                console.log("Removing spark:", spark); // Debug log.
                 spark.remove(); // Remove the spark element.
             }
             return; // Stop animation for this spark.
         }
 
-        console.log("Updating spark position and opacity..."); // Debug log.
         // Get current position and calculate new opacity.
         const x = parseFloat(spark.style.left);
         const y = parseFloat(spark.style.top);
@@ -696,17 +693,11 @@ function animateSpark(spark, vx, vy) {
         spark.style.top = `${y + vy}px`;
         spark.style.opacity = opacity; // Apply new opacity.
 
-        console.log("spark.style.left:", spark.style.left); // Debug log.
-        console.log("spark.style.top:", spark.style.top); // Debug log.
-        console.log("spark.style.opacity:", spark.style.opacity); // Debug log.
-
         // Apply gravity (increase downward velocity).
         vy += gravity;
-        console.log("Updated vertical velocity (vy):", vy); // Debug log.
 
         // Decrease spark's life.
         life -= fadeSpeed;
-        console.log("Remaining life of spark:", life); // Debug log.
 
         // Request the next animation frame.
         requestAnimationFrame(update);
@@ -721,15 +712,19 @@ function animateSpark(spark, vx, vy) {
 async function fetchLLMCommentary(outcomeDescription) {
     console.log("Fetching LLM commentary for:", outcomeDescription); // Debug log.
     // Show the loading indicator and clear any previous commentary text.
-    if (llmLoadingIndicator) llmLoadingIndicator.classList.remove('hidden');
-    if (llmCommentaryDisplay) llmCommentaryDisplay.textContent = '';
+    if (!llmCommentaryDisplay || !llmLoadingIndicator) return;
+    llmCommentaryDisplay.textContent = '';
+    llmLoadingIndicator.style.display = 'block';
+
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    llmCommentaryDisplay.textContent = 'Generating commentary...';
+    llmLoadingIndicator.style.display = 'block';
 
     // Construct the prompt to send to the LLM.
     const prompt = `The tic-tac-toe game just ended. Outcome: ${outcomeDescription}. Give a very short, cheerful, and slightly witty comment about this outcome.`;
 
-    // IMPORTANT: Replace "YOUR_GEMINI_API_KEY_HERE" with your actual Google Gemini API key.
     // For security, ideally, this key would be managed on a server, not directly in client-side code.
-    const apiKey = "AIzaSyDhvw95rpSvkQLhxc0EZOYxjDHbiI4aFRE"; // Your actual Gemini API key.
+    const apiKey = "AIzaSyDEul5h6c7Qo1I4ORfcFHbwf2KvVGNxkWY"; // Your actual Gemini API key.
     // Check if the API key is missing or still the default placeholder.
     if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY_HERE") {
         console.warn("LLM API Key is missing or default. Commentary will not work."); // Warning.
@@ -818,6 +813,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("DOM Content Loaded. All elements assigned. Initializing game setup."); // Debug log.
     createBoardCells(); // Create the initial Tic-Tac-Toe board cells.
-    loadScores();       // Load any previously saved scores.
-    hideGameElements(); // Start the game with mode selection visible and game elements hidden.
+    createBoardCells(); // Create the initial Tic-Tac-Toe board cells.
+
+    // Check for required DOM elements before proceeding
+    if (
+        body &&
+        gameboard &&
+        turnMessageDisplay &&
+        infoDisplay &&
+        newGameBtn &&
+        playerOCircleScoreDisplay &&
+        playerXCrossScoreDisplay &&
+        tiesScoreDisplay &&
+        clearScoresBtn &&
+        llmCommentaryDisplay &&
+        llmLoadingIndicator &&
+        singlePlayerBtn &&
+        twoPlayerBtn
+    ) {
+        loadScores();       // Load any previously saved scores.
+        hideGameElements(); // Start the game with mode selection visible and game elements hidden.
+    } else {
+        console.error("One or more required DOM elements are missing. Please check your HTML structure.");
+    }
 });

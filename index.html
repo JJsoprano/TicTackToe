@@ -32,17 +32,19 @@
         <!-- Game status info (could be used for displaying instructions or game status) -->
         <p id="info" class="game-status"> Hello, Welcome</p>
         <!-- Gameboard where the Tic Tac Toe grid will be rendered -->
-        <div id="gameboard">
-            </div>
-            <!-- Buttons for starting a new game or clearing the score -->
-        <button id="newGameBtn">Start New Game</button>
-        <button id="clearScoresBtn">Clear Scores</button>
-            <!-- Section for LLM (AI-generated commentary) -->
-        <div class="llm-commentary-section">
+        <div id="gameboard"></div>
+<!-- Buttons for starting a new game or clearing the score -->
+<div class="game-buttons">
+    <button id="newGameBtn">Start New Game</button>
+    <button id="clearScoresBtn">Clear Scores</button>
+</div>
+
+<!-- Section for LLM (AI-generated commentary) -->
+<div class="llm-commentary-section">
             <!-- Display AI commentary about the game -->
             <p id="llmCommentaryDisplay" class="llm-commentary-text"></p>
             <!-- Loading indicator for when commentary is being generated -->
-            <p id="llmLoadingIndicator" class="llm-loading-indicator hidden">Generating commentary...</p>
+            <p id="llmLoadingIndicator" class="llm-loading-indicator hidden">You lost Soprano...</p>
         </div>
         <!-- Effects for X and O wins (animations or visual effects) -->
         <div id="xWinBurst" class="x-win-burst"></div>
